@@ -1,2 +1,52 @@
 ---
 # tasks file for ansible-role-nginx-controller-component
+
+- name: Build JSON payload
+  template: src={{service_template}}.j2 dest={{service_template}}.json
+
+- name: Adding service
+  uri:
+   url: "https://{{blue_controller}}/{{api_application_service}}/{{service_name}}"
+   method: "PUT"
+   body: "{{(lookup('file','{{service_template}}.json'))}}"
+   headers:
+    X-F5-AuthN-Token: "{{auth_token}}"
+   body_format: json
+   status_code:
+   - 200
+   return_content: true
+   validate_certs: no
+  register: service_stats
+
+- name: show services status
+  debug: msg="{{ service_stats }}"
+
+# pause to give the system a moment to initiate the change
+- name: pause
+  pause:
+   seconds: 2
+
+- name: Confirm service is provisioned
+  uri:
+   url: "{{ service_stats.url }}"
+   method: "GET"
+   headers:
+    X-F5-AuthN-Token: "{{auth_token}}"
+   body_format: json
+   status_code:
+   - 200
+   return_content: true
+   validate_certs: no
+  register: application_service
+  until: (application_service is defined ) and 
+         ((( service_stats.json.status.desired != None ) and ( "NOT_APPLICABLE" in service_stats.json.status.desired.phase )) or
+         (( application_service.json.status.active != None ) and ( "PROVISIONED" in application_service.json.status.active.phase )) or
+         (( application_service.json.status.desired != None ) and ( "PROVISIONED" in application_service.json.status.desired.phase )))
+  retries: 85
+  delay: 10
+  # not_applicable means that no changes will be made
+  # provisioned state is achieved when the changes are complete
+  # when an empty spec is provided the app and services will be deleted and the phase can be undefined
+
+- name: show service details
+  debug: msg="{{ application_service }}"
