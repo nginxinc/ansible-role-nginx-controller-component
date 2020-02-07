@@ -1,0 +1,41 @@
+{
+    "spec": {
+        "ingress": {
+            "uris": {
+                "{{ingress_uri}}": {
+{% if ingress_uri.startswith("https://") %}
+                    "tls": {
+{% if cert_name %}
+                        "cert_id": "{{cert_name}}"
+{% endif %}
+                    }
+{% endif %}
+                }
+            }
+        },
+        "egress": {
+            "workloads": {
+{% for workload in workloads %}
+                "{{workload.uri}}": {}{% if not loop.last %},
+{% endif %}
+{% endfor %}{{''}},
+            },
+            "persistence": {
+{% if workload_persistence %}
+                "cookie_persistence": "{{workload_persistence}}"
+{% endif %}
+            },
+            "load_balancing_method": "ROUNDROBIN",
+            "monitors": {
+                "{{workload_monitor_protocol}}": {
+                    "interval_seconds": 10,
+                    "consecutive_success_threshold": 2,
+                    "consecutive_failure_threshold": 2,
+                    "response": {
+                        "timeout_seconds": 7
+                    }
+                }
+            }
+        }
+    }
+}
