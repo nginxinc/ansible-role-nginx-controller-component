@@ -1,44 +1,56 @@
 ---
 # tasks file for ansible-role-nginx-controller-component
+- name: Fail if required variables are not defined
+  assert:
+    that: ("{{ item }} is defined") and ("{{ item }} | length > 0")
+  with_items:
+    - ctrl_tarball_src
+    - ctrl_install_path
 
 - name: Build JSON payload
-  template: src={{service_template}}.j2 dest={{service_template}}.json
+  template: src={{app_component}}.j2 dest={{app_component}}.json
 
-- name: Adding service
+- name: form the component url
+  set_fact:
+    component_url: "https://{{controller_fqdn}}/{{api_version}}/services/environments/{{environment_name}}/apps/{{app_name}}/components/{{component_name}}"
+
+- name: upsert component (create if absent, change if present)
   uri:
-   url: "https://{{blue_controller}}/{{api_application_service}}/{{service_name}}"
+   url: "{{ component_url }}"
    method: "PUT"
-   body: "{{(lookup('file','{{service_template}}.json'))}}"
-   headers:
-    X-F5-AuthN-Token: "{{auth_token}}"
+   body: "{{(lookup('file','{{app_component}}.json'))}}"
    body_format: json
    status_code:
    - 200
-   return_content: true
+   return_content: yes
    validate_certs: no
-  register: service_stats
+  headers:
+    Cookie: "{{controller_auth_token}}"
+  register: component_status
 
-- name: show services status
-  debug: msg="{{ service_stats }}"
+- name: show component status
+  debug: 
+    msg: "{{ component_status }}"
 
 # pause to give the system a moment to initiate the change
 - name: pause
   pause:
    seconds: 2
 
-- name: Confirm service is provisioned
+- name: Confirm component is provisioned and not errored
   uri:
-   url: "{{ service_stats.url }}"
+   url: "{{ component_url }}"
    method: "GET"
-   headers:
-    X-F5-AuthN-Token: "{{auth_token}}"
    body_format: json
    status_code:
    - 200
-   return_content: true
+   return_content: yes
    validate_certs: no
-  register: application_service
-  until: (application_service is defined ) and 
+  headers:
+    Cookie: "{{controller_auth_token}}"
+  register: application_component
+  # error handling needs work
+  until: (application_component is defined ) and
          ((( service_stats.json.status.desired != None ) and ( "NOT_APPLICABLE" in service_stats.json.status.desired.phase )) or
          (( application_service.json.status.active != None ) and ( "PROVISIONED" in application_service.json.status.active.phase )) or
          (( application_service.json.status.desired != None ) and ( "PROVISIONED" in application_service.json.status.desired.phase )))
@@ -48,5 +60,6 @@
   # provisioned state is achieved when the changes are complete
   # when an empty spec is provided the app and services will be deleted and the phase can be undefined
 
-- name: show service details
-  debug: msg="{{ application_service }}"
+- name: show component details
+  debug: 
+    msg: "{{ application_component }}"

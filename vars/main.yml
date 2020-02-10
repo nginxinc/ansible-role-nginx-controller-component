@@ -1,2 +1,11 @@
 ---
 # vars file for ansible-role-nginx-controller-component
+
+controller_fqdn
+
+environment_name
+
+app_name
+
+component_name
+
