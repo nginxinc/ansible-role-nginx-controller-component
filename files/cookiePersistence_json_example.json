@@ -1,0 +1,39 @@
+{
+    "metadata": {
+        "name": "shop"
+    },
+    "desiredState": {
+        "ingress": {
+            "uris": {
+                "https://merch.dev.acmefinancial.net/": {
+                }                 
+            },
+            "gatewayRefs": [
+                    {
+                        "ref": "/services/environments/retail-dev/gateways/merch.acmefinancial.net"
+                    }                   
+                ]
+        },
+        "backend": {
+            "workloadGroups": {
+                "servers": {
+                    "uris": {
+                        "https://10.1.20.41": {
+                        },
+                        "https://10.1.20.42": {
+                        }                      
+                    },
+					"sessionPersistence": {
+						"type": "COOKIE",
+						"srvID": "p_opencart",
+						"expireTime": "1h",
+						"domain": ".$host",
+						"httpOnly": "enabled",
+						"secure": "enabled",
+						"path": "/"
+					}  
+                }
+            }
+        }       
+    }    
+}

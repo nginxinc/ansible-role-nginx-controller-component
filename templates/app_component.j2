@@ -39,7 +39,7 @@
                     sessionCache: (OFF, NONE, BUILTIN, SHARED)
                 },
                 "notFoundStatusCode": int,
-                "gatewayRefs": [ ref ],
+                "gatewayRefs": [ {ref} ],
                 "tcpKeepAlive": {
                     state: (ENABLED, DISABLED)
                     idle: string
@@ -51,7 +51,7 @@
         "backend": {
             "workloadGroups": [
                 {
-                    "locationRefs": [ ref ],
+                    "locationRefs": [ {ref} ],
                     "uris": [
                         {{uri}}: {
                             "weight": int,

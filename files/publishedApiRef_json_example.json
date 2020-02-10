@@ -1,0 +1,39 @@
+{
+    "metadata": {
+        "name": "trading-api",
+        "displayName": "Trading API",        
+        "tags": [
+            "trading",
+            "apim",
+            "development"
+        ]
+    },
+    "desiredState": {
+        "ingress": {
+            "uris": {
+                "/api": {
+                    "matchMethod": "EXACT"
+                }
+            },
+            "gatewayRefs": [
+                {
+                    "ref": "/services/environments/retail-dev/gateways/trading-api.acmefinancial.net"
+                }
+            ]
+        },
+        "backend": {
+            "workloadGroups": {
+                "app2-servers": {
+                    "uris": {
+                        "http://10.1.20.21:9804": {}
+                    }
+                }
+            }
+        },
+        "publishedApiRefs": [
+            {
+                "ref": "/services/environments/retail-dev/apps/trading.acmefinancial.net/published-apis/trading-pub"
+            }
+        ]
+    }
+}

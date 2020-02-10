@@ -1,0 +1,52 @@
+{
+    "metadata": {
+        "name": "trading-api-secure",
+        "displayName": "Trading API Secure"
+    },
+    "desiredState": {
+        "ingress": {
+            "uris": {
+                "/trading/rest/buy_stocks.php": {
+                    "matchMethod": "EXACT"
+                },
+                "/trading/rest/sell_stocks.php": {
+                    "matchMethod": "EXACT"
+                },
+                "/trading/transactions.php": {
+                    "matchMethod": "EXACT"
+                }
+            },
+            "gatewayRefs": [
+                {
+                    "ref": "/services/environments/retail-dev/gateways/trading-api.acmefinancial.net"
+                }
+            ]
+        },
+        "publishedApiRefs": [
+            {
+                "ref": "/services/environments/retail-dev/apps/trading.acmefinancial.net/published-apis/trading-pub"
+            }
+        ],
+        "backend": {
+            "workloadGroups": {
+                "mainapp-servers": {
+                    "uris": {
+                        "http://10.1.20.21:9801": {}
+                    }
+                }
+            },
+            "monitoring": {}
+        },
+        "security": {
+            "identityProviderRefs": [
+                {
+                    "ref": "/security/identity-providers/trading-api-jwt-inline-dev"
+                }
+            ],
+            "jwtClientAuth": {
+                "keyLocation": "BEARER",
+                "key": "auth"
+            }
+        }
+    }
+}

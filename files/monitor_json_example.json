@@ -1,0 +1,49 @@
+{
+    "metadata": {
+        "name": "ratecalculator.acmefinancial.net",
+        "displayName": "Rate Calculator"
+    },
+    "desiredState": {
+        "ingress": {
+            "uris": {
+                "http://ratecalculator.acmefinancial.net/": {
+                },
+                "https://ratecalculator.acmefinancial.net/": {
+                }                
+            },
+            "gatewayRefs": [
+                    {
+                        "ref": "/services/environments/lending-prod/gateways/lending"
+                    }                   
+                ]
+        },
+        "backend": {
+            "workloadGroups": {
+                "servers": {
+                    "uris": {
+                        "http://10.1.10.11:8121": {
+                        },
+                        "http://10.1.10.12:8121": {
+                        },
+                        "http://10.1.10.11:5821": {
+                        },
+                        "http://10.1.10.12:5821": {
+                        }  
+                        
+                    }
+                }
+            },
+            "monitoring":{
+            	"response":{
+            		"status":{
+            			"range":{
+            				"startCode": 200,
+            				"endCode": 201
+            			},
+            			"match": true
+            		}
+            	}
+            }            
+        }        
+    }    
+}
