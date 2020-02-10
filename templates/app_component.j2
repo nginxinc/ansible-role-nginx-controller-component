@@ -17,7 +17,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                 "{{ingress_uri}}": { 
                     "matchMethod": ( PREFIX, REGEX, REGEX_CASE_SENSITIVE, SUFFIX, EXACT )
                     "tls": {
-                        "certRef": { ref: }
+                        "certRef": { ref: {{ingress_uri_cert_ref}} }
                         "protocols": string
                         "cipher": string
                         "preferServiceCipherServiceConfigState": (ENABLED, DISABLED)
@@ -47,7 +47,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                 },
                 "notFoundStatusCode": int,
                 "gatewayRefs": [
-                    { ref: }
+                    { ref: {{ingress_gateway_ref}} }
                 ],
                 "tcpKeepAlive": {
                     state: (ENABLED, DISABLED)
@@ -62,7 +62,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                 {{workload_group}}: 
                     {
                         "locationRefs": [
-                            { ref: }
+                            { {{workload_location_ref}}: }
                         ],
                         "uris": [
                             {{workload_uri}}: {
