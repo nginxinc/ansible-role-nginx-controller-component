@@ -17,7 +17,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                 "{{ingress_uri}}": { 
                     "matchMethod": ( PREFIX, REGEX, REGEX_CASE_SENSITIVE, SUFFIX, EXACT )
                     "tls": {
-                        "certRef": { ref }
+                        "certRef": { ref: }
                         "protocols": string
                         "cipher": string
                         "preferServiceCipherServiceConfigState": (ENABLED, DISABLED)
@@ -39,14 +39,16 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                 "isIpv6Only": bool,
                 "reusePort": (ENABLED, DISABLED),
                 "tls": { 
-                    certRef: { ref }
+                    certRef: { ref: }
                     protocols: string
                     cipher: string
                     preferServiceCipherServiceConfigState: (ENABLED, DISABLED) 
                     sessionCache: (OFF, NONE, BUILTIN, SHARED)
                 },
                 "notFoundStatusCode": int,
-                "gatewayRefs": [ {ref} ],
+                "gatewayRefs": [
+                    { ref: }
+                ],
                 "tcpKeepAlive": {
                     state: (ENABLED, DISABLED)
                     idle: string
@@ -57,32 +59,35 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
         },
         "backend": {
             "workloadGroups": [
-                {
-                    "locationRefs": [ {ref} ],
-                    "uris": [
-                        {{uri}}: {
-                            "weight": int,
-                            "maxConns": int,
-                            "maxFails": int,
-                            "failTimeout": string,
-                            "isBackup": bool,
-                            "isDown": bool,
-                            "resolve": ( ENABLED, DISABLED ),
-                            "route": string,
-                            "service": string,
-                            "slowStart": int,
-                            "isDrain": bool
-                        }
-                    ],
-                    "loadBalancingMethod": ( ROUND_ROBIN, IPHASH, LEAST_CONNECTIONS, HASH: { type: userKey: consistentHash (ENABLED, DISABLED) }, LEAST_TIME: {HEADER, LAST_BYTE, LAST_BYTE_INFLIGHT} , RANDOM: {LEAST_CONNECTIONS, LEAST_TIME_HEADER, LEAST_TIME_LAST_BYTE} )
-                    "sessionPersistence": ( COOKIE: {srvID: string, expireTime: string, domain: string, path: string}, ROUTE: { routeInfoLocation: (COOKIE, URI, BOTH), COOKIE_LEARN: { create: string, lookup: string }  }  )
-                    "serviceDiscovery":
-                        "dnsResolver": {
-                            "uris": 
-                            "ttl": 
-                            "failTimeout":
-                        }
-                }
+                {{workload_group}}: 
+                    {
+                        "locationRefs": [
+                            { ref: }
+                        ],
+                        "uris": [
+                            {{workload_uri}}: {
+                                "weight": int,
+                                "maxConns": int,
+                                "maxFails": int,
+                                "failTimeout": string,
+                                "isBackup": bool,
+                                "isDown": bool,
+                                "resolve": ( ENABLED, DISABLED ),
+                                "route": string,
+                                "service": string,
+                                "slowStart": int,
+                                "isDrain": bool
+                            }
+                        ],
+                        "loadBalancingMethod": ( ROUND_ROBIN, IPHASH, LEAST_CONNECTIONS, HASH: { type: userKey: consistentHash (ENABLED, DISABLED) }, LEAST_TIME: {HEADER, LAST_BYTE, LAST_BYTE_INFLIGHT} , RANDOM: {LEAST_CONNECTIONS, LEAST_TIME_HEADER, LEAST_TIME_LAST_BYTE} )
+                        "sessionPersistence": ( COOKIE: {srvID: string, expireTime: string, domain: string, path: string}, ROUTE: { routeInfoLocation: (COOKIE, URI, BOTH), COOKIE_LEARN: { create: string, lookup: string }  }  )
+                        "serviceDiscovery":
+                            "dnsResolver": {
+                                "uris": 
+                                "ttl": 
+                                "failTimeout":
+                            }
+                    }
             ],
             "monitoring": {
                 "defaultState": ( HEALTHY, UNHEALTHY ),
@@ -98,7 +103,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                             "startCode": int,
                             "endCode": int
                         },
-                        "codes": [],
+                        "codes": [ ],
                         "match": bool
                     },
                     "headers": {
@@ -189,7 +194,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
             "accessLog": ( ENABLED, DISABLED )
         },
         "security": {
-            "strategyRef": { ref }
+            "strategyRef": { ref: }
             "waf": {
                 "isEnabled": bool,
                 "isMonitorOnly": bool,
@@ -198,7 +203,9 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                 },
                 "technologyStack": []
             },
-            "identityProviderRefs": [ ref ],
+            "identityProviderRefs": [ 
+                { ref: }
+            ],
             "apiKeyClientAuth": {
                 "keyLocation": ( HEADER, QUERY_PARAM ),
                 "key": string
@@ -225,7 +232,9 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
             },
             "interceptWorkloadErrors": ( ENABLED, DISABLED )
         },
-        "publishedApiRefs": [ ref ]
+        "publishedApiRefs": [ 
+            { ref: }
+        ]
         }
     }
 }
