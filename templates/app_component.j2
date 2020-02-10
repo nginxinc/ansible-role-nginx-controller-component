@@ -1,5 +1,10 @@
 {
     "desiredState": {
+        "metadata": {
+            "displayName": string,
+            "description": string,
+            "tags": [ tag ]
+        },
         "ingress": {
             "uris": {
                 "{{ingress_uri}}": { 
@@ -11,43 +16,57 @@
                         "preferServiceCipherServiceConfigState": (ENABLED, DISABLED)
                         "sessionCache": (OFF, NONE, BUILTIN, SHARED)
                     }
+                },
+                "methods": [ POST, GET, PUT, DELETE, PATCH, HEAD, TRACE, OPTIONS, CONNECT ],
+                "headers": [  ],
+                "http2": (ENABLED, DISABLED),
+                "spdy": (ENABLED, DISABLED),
+                "proxyProtocol": (ENABLED, DISABLED),
+                "setFib": int,
+                "fastOpen": int,
+                "backlog": int,
+                "receiveBufferSize": string,
+                "sendBufferSize": string,
+                "acceptFilter": (DATA_READY, HTTP_READY),
+                "deferred": (ENABLED, DISABLED),
+                "isIpv6Only": bool,
+                "reusePort": (ENABLED, DISABLED),
+                "tls": { 
+                    certRef: { ref }
+                    protocols: string
+                    cipher: string
+                    preferServiceCipherServiceConfigState: (ENABLED, DISABLED) 
+                    sessionCache: (OFF, NONE, BUILTIN, SHARED)
+                },
+                "notFoundStatusCode": int,
+                "gatewayRefs": [ ref ],
+                "tcpKeepAlive": {
+                    state: (ENABLED, DISABLED)
+                    idle: string
+                    interval: string
+                    count: int
                 }
             },
-            "methods": [ POST, GET, PUT, DELETE, PATCH, HEAD, TRACE, OPTIONS, CONNECT ],
-            "headers": [  ],
-            "http2": (ENABLED, DISABLED),
-            "spdy": (ENABLED, DISABLED),
-            "proxyProtocol": (ENABLED, DISABLED),
-            "setFib": int,
-            "fastOpen": int,
-            "backlog": int,
-            "receiveBufferSize": string,
-            "sendBufferSize": string,
-            "acceptFilter": (DATA_READY, HTTP_READY),
-            "deferred": (ENABLED, DISABLED),
-            "isIpv6Only": bool,
-            "reusePort": (ENABLED, DISABLED),
-            "tls": { 
-                certRef: { ref }
-                protocols: string
-                cipher: string
-                preferServiceCipherServiceConfigState: (ENABLED, DISABLED) 
-                sessionCache: (OFF, NONE, BUILTIN, SHARED)
-            },
-            "notFoundStatusCode": int,
-            "gatewayRefs": [ ref ],
-            "tcpKeepAlive": {
-                state: (ENABLED, DISABLED)
-                idle: string
-                interval: string
-                count: int
-            }
         },
         "backend": {
             "workloadGroups": [
                 {
                     "locationRefs": [ ref ],
-                    "uris": {},
+                    "uris": [
+                        {{uri}}: {
+                            "weight": int,
+                            "maxConns": int,
+                            "maxFails": int,
+                            "failTimeout": string,
+                            "isBackup": bool,
+                            "isDown": bool,
+                            "resolve": ( ENABLED, DISABLED ),
+                            "route": string,
+                            "service": string,
+                            "slowStart": int,
+                            "isDrain": bool
+                        }
+                    ],
                     "loadBalancingMethod": ( ROUND_ROBIN, IPHASH, LEAST_CONNECTIONS, HASH: { type: userKey: consistentHash (ENABLED, DISABLED) }, LEAST_TIME: {HEADER, LAST_BYTE, LAST_BYTE_INFLIGHT} , RANDOM: {LEAST_CONNECTIONS, LEAST_TIME_HEADER, LEAST_TIME_LAST_BYTE} )
                     "sessionPersistence": ( COOKIE: {srvID: string, expireTime: string, domain: string, path: string}, ROUTE: { routeInfoLocation: (COOKIE, URI, BOTH), COOKIE_LEARN: { create: string, lookup: string }  }  )
                     "serviceDiscovery":
@@ -100,22 +119,63 @@
             "persistentState": string
         },
         "programmability": {
-            "uriRewrites": {
-                "incomingPattern": string,
-                "rewritePattern": string
-            },
+            "uriRewrites": [
+                {
+                    "incomingPattern": string,
+                    "rewritePattern": string
+                }
+            ],
             "httpHttpsRedirect": ( ENABLED, DISABLED ),
-            "uriRedirects": {
-                "incomingPattern": string,
-                "rewritePattern": string,
-                "responseCode": int
-            },
-            "cookieModifications": {
-               "action": ( ADD, MODIFY, DELETE ),
-               "cookieName": string,
-               "cookieValue": string 
-            },
-            'requestHeaderModifications': ( { 'action': ADD "headerName": "headerValue": }, { "action": MODIFY "headerName": "incomingValuePattern": rewriteVa"luePattern: }, { "action": DELETE "headerName": "incomingValuePattern": } )
+            "uriRedirects": [
+                {
+                    "incomingPattern": string,
+                    "rewritePattern": string,
+                    "responseCode": int
+                }
+            ],
+            "cookieModifications": [
+                {
+                "action": ( ADD, MODIFY, DELETE ),
+                "cookieName": string,
+                "cookieValue": string 
+                }
+            ],
+            'requestHeaderModifications': [
+                {
+                    'action': ADD,
+                    "headerName": ,
+                    "headerValue": 
+                },
+                { 
+                    "action": MODIFY,
+                    "headerName": ,
+                    "incomingValuePattern": ,
+                    "rewriteValuePattern": 
+                },
+                { 
+                    "action": DELETE,
+                    "headerName": ,
+                    "incomingValuePattern": 
+                }
+            ],
+            'responseHeaderModifications': [
+                {
+                    'action': ADD,
+                    "headerName": ,
+                    "headerValue": 
+                },
+                { 
+                    "action": MODIFY,
+                    "headerName": ,
+                    "incomingValuePattern": ,
+                    "rewriteValuePattern": 
+                },
+                { 
+                    "action": DELETE,
+                    "headerName": ,
+                    "incomingValuePattern": 
+                }
+            ]
         },
         "logging": {
             "errorLog": ( ENABLED, DISABLED ),
