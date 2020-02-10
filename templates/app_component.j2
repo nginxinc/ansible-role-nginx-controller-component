@@ -3,13 +3,13 @@
         "ingress": {
             "uris": {
                 "{{ingress_uri}}": { 
-                    matchMethod: ( PREFIX, REGEX, REGEX_CASE_SENSITIVE, SUFFIX, EXACT )
-                    tls: {
-                        certRef:
-                        protocols:
-                        cipher:
-                        preferServiceCipherServiceConfigState: (ENABLED, DISABLED)
-                        sessionCache: (OFF, NONE, BUILTIN, SHARED)
+                    "matchMethod": ( PREFIX, REGEX, REGEX_CASE_SENSITIVE, SUFFIX, EXACT )
+                    "tls": {
+                        "certRef": { ref }
+                        "protocols": string
+                        "cipher": string
+                        "preferServiceCipherServiceConfigState": (ENABLED, DISABLED)
+                        "sessionCache": (OFF, NONE, BUILTIN, SHARED)
                     }
                 }
             },
@@ -28,14 +28,14 @@
             "isIpv6Only": bool,
             "reusePort": (ENABLED, DISABLED),
             "tls": { 
-                certRef: 
-                protocols: 
-                cipher: 
+                certRef: { ref }
+                protocols: string
+                cipher: string
                 preferServiceCipherServiceConfigState: (ENABLED, DISABLED) 
                 sessionCache: (OFF, NONE, BUILTIN, SHARED)
             },
             "notFoundStatusCode": int,
-            "gatewayRefs": [],
+            "gatewayRefs": [ ref ],
             "tcpKeepAlive": {
                 state: (ENABLED, DISABLED)
                 idle: string
@@ -46,123 +46,119 @@
         "backend": {
             "workloadGroups": [
                 {
-                    locationRefs: [
-                        ref: 
-                    ],
-                    uris: {},
-                    loadBalancingMethod: ( ROUND_ROBIN, IPHASH, LEAST_CONNECTIONS, HASH: { type: userKey: consistentHash (ENABLED, DISABLED) }, LEAST_TIME: {HEADER, LAST_BYTE, LAST_BYTE_INFLIGHT} , RANDOM: {LEAST_CONNECTIONS, LEAST_TIME_HEADER, LEAST_TIME_LAST_BYTE} )
-                    sessionPersistence: ( COOKIE: {srvID: string, expireTime: string, domain: string, path: string}, ROUTE: { routeInfoLocation: (COOKIE, URI, BOTH), COOKIE_LEARN: { create: string, lookup: string }  }  )
-                    serviceDiscovery:
-                        dnsResolver: {
-                            uris: 
-                            ttl: 
-                            failTimeout:
+                    "locationRefs": [ ref ],
+                    "uris": {},
+                    "loadBalancingMethod": ( ROUND_ROBIN, IPHASH, LEAST_CONNECTIONS, HASH: { type: userKey: consistentHash (ENABLED, DISABLED) }, LEAST_TIME: {HEADER, LAST_BYTE, LAST_BYTE_INFLIGHT} , RANDOM: {LEAST_CONNECTIONS, LEAST_TIME_HEADER, LEAST_TIME_LAST_BYTE} )
+                    "sessionPersistence": ( COOKIE: {srvID: string, expireTime: string, domain: string, path: string}, ROUTE: { routeInfoLocation: (COOKIE, URI, BOTH), COOKIE_LEARN: { create: string, lookup: string }  }  )
+                    "serviceDiscovery":
+                        "dnsResolver": {
+                            "uris": 
+                            "ttl": 
+                            "failTimeout":
                         }
                 }
             ],
             "monitoring": {
-                defaultState: ( HEALTHY, UNHEALTHY ),
-                interval: int,
-                timeout: int,
-                consecutiveSuccessThreshold: int,
-                consecutiveFailureThreshold: int,
-                port: int,
-                uri: string,
-                response: {
-                    status: {
-                        range: {
-                            startCode: int,
-                            endCode: int
+                "defaultState": ( HEALTHY, UNHEALTHY ),
+                "interval": int,
+                "timeout": int,
+                "consecutiveSuccessThreshold": int,
+                "consecutiveFailureThreshold": int,
+                "port": int,
+                "uri": string,
+                "response": {
+                    "status": {
+                        "range": {
+                            "startCode": int,
+                            "endCode": int
                         },
-                        codes: [],
-                        match: bool
+                        "codes": [],
+                        "match": bool
                     },
-                    headers: {
-                        content: string,
-                        match: bool
+                    "headers": {
+                        "content": string,
+                        "match": bool
                     },
-                    body: {
-                        content: string,
-                        match: bool
+                    "body": {
+                        "content": string,
+                        "match": bool
                     }
                 }
             },
             "preserveHostHeader": ( ENABLED, DISABLED ),
             "keepAlive": {
-                connections: int,
-                requestsPerConn: int,
-                idleTimeout: string
+                "connections": int,
+                "requestsPerConn": int,
+                "idleTimeout": string
             },
             "queue": {
-                lenght: int,
-                timeOut: string
+                "lenght": int,
+                "timeOut": string
             },
             "httpVersion": string,
             "ntlmAuthentication": ( ENABLED, DISABLED ),
             "persistentState": string
         },
-        programmability: {
-            uriRewrites: {
-                incomingPattern: string,
-                rewritePattern: string
+        "programmability": {
+            "uriRewrites": {
+                "incomingPattern": string,
+                "rewritePattern": string
             },
-            httpHttpsRedirect: ( ENABLED, DISABLED ),
-            uriRedirects: {
-                incomingPattern: string,
-                rewritePattern: string,
-                responseCode: int
+            "httpHttpsRedirect": ( ENABLED, DISABLED ),
+            "uriRedirects": {
+                "incomingPattern": string,
+                "rewritePattern": string,
+                "responseCode": int
             },
-            cookieModifications: {
-               action: ( ADD, MODIFY, DELETE ),
-               cookieName: string,
-               cookieValue: string 
+            "cookieModifications": {
+               "action": ( ADD, MODIFY, DELETE ),
+               "cookieName": string,
+               "cookieValue": string 
             },
-            requestHeaderModifications: ( { action: ADD headerName: headerValue: }, { action: MODIFY headerName: incomingValuePattern: rewriteValuePattern: }, { actoin: DELETE headerName: incomingValuePattern: } )
+            'requestHeaderModifications': ( { 'action': ADD "headerName": "headerValue": }, { "action": MODIFY "headerName": "incomingValuePattern": rewriteVa"luePattern: }, { "action": DELETE "headerName": "incomingValuePattern": } )
         },
-        logging: {
-            errorLog: ( ENABLED, DISABLED ),
-            accessLog: ( ENABLED, DISABLED )
+        "logging": {
+            "errorLog": ( ENABLED, DISABLED ),
+            "accessLog": ( ENABLED, DISABLED )
         },
-        security: {
-            strategyRef: {
-                ref 
-            }
-            waf: {
-                isEnabled: bool,
-                isMonitorOnly: bool,
-                signatureOverrides: {
-                    action: IGNORE
+        "security": {
+            "strategyRef": { ref }
+            "waf": {
+                "isEnabled": bool,
+                "isMonitorOnly": bool,
+                "signatureOverrides": {
+                    "action": IGNORE
                 },
-                technologyStack: []
+                "technologyStack": []
             },
-            identityProviderRefs: [ ref ],
-            apiKeyClientAuth: {
-                keyLocation: ( HEADER, QUERY_PARAM ),
-                key: string
+            "identityProviderRefs": [ ref ],
+            "apiKeyClientAuth": {
+                "keyLocation": ( HEADER, QUERY_PARAM ),
+                "key": string
             },
-            jwtClientAuth: {
-                keyLocation: ( BEARER, HEADER, QUERY_PARAM, COOKIE ),
-                key: string
+            "jwtClientAuth": {
+                "keyLocation": ( BEARER, HEADER, QUERY_PARAM, COOKIE ),
+                "key": string
             },
-            conditionalAuth: {
-                sourceType: ( HEADER, JWT_CLAIM ),
-                sourceKey: string,
-                comparisonType: ( EQUALS, NOT_EQUALS, IN, CONTAINS ),
-                comparisonValues: string,
-                action: ( ALLOW, DENY ),
-                denyStatusCode: int
+            "conditionalAuth": {
+                "sourceType": ( HEADER, JWT_CLAIM ),
+                "sourceKey": string,
+                "comparisonType": ( EQUALS, NOT_EQUALS, IN, CONTAINS ),
+                "comparisonValues": string,
+                "action": ( ALLOW, DENY ),
+                "denyStatusCode": int
             },
-            rateLimit: {
-                rate: int,
-                rateMeasure: ( SECONDS, MINUTES ),
-                burst: int,
-                delay: int,
-                statusCode: int,
-                key: nginx_variable
+            "rateLimit": {
+                "rate": int,
+                "rateMeasure": ( SECONDS, MINUTES ),
+                "burst": int,
+                "delay": int,
+                "statusCode": int,
+                "key": nginx_variable
             },
-            interceptWorkloadErrors: ( ENABLED, DISABLED )
+            "interceptWorkloadErrors": ( ENABLED, DISABLED )
         },
-        publishedApiRefs: [ ref ]
+        "publishedApiRefs": [ ref ]
         }
     }
 }
