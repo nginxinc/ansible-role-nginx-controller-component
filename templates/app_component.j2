@@ -2,15 +2,45 @@
     "desiredState": {
         "ingress": {
             "uris": {
-                "{{ingress_uri}}": {
-{% if ingress_uri.startswith("https://") %}
-                    "tls": {
-{% if cert_name %}
-                        "cert_id": "{{cert_name}}"
-{% endif %}
+                "{{ingress_uri}}": { 
+                    matchMethod: ( PREFIX, REGEX, REGEX_CASE_SENSITIVE, SUFFIX, EXACT )
+                    tls: {
+                        certRef:
+                        protocols:
+                        cipher:
+                        preferServiceCipherServiceConfigState: (ENABLED, DISABLED)
+                        sessionCache: (OFF, NONE, BUILTIN, SHARED)
                     }
-{% endif %}
                 }
+            },
+            "methods": [ POST, GET, PUT, DELETE, PATCH, HEAD, TRACE, OPTIONS, CONNECT ],
+            "headers": [  ],
+            "http2": (ENABLED, DISABLED),
+            "spdy": (ENABLED, DISABLED),
+            "proxyProtocol": (ENABLED, DISABLED),
+            "setFib": int,
+            "fastOpen": int,
+            "backlog": int,
+            "receiveBufferSize": string,
+            "sendBufferSize": string,
+            "acceptFilter": (DATA_READY, HTTP_READY),
+            "deferred": (ENABLED, DISABLED),
+            "isIpv6Only": bool,
+            "reusePort": (ENABLED, DISABLED),
+            "tls": { 
+                certRef: 
+                protocols: 
+                cipher: 
+                preferServiceCipherServiceConfigState: (ENABLED, DISABLED) 
+                sessionCache: (OFF, NONE, BUILTIN, SHARED)
+            },
+            "notFoundStatusCode": int,
+            "gatewayRefs": [],
+            "tcpKeepAlive": {
+                state: (ENABLED, DISABLED)
+                idle: string
+                interval: string
+                count: int
             }
         },
         "egress": {

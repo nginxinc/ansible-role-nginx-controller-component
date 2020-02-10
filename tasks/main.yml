@@ -4,8 +4,11 @@
   assert:
     that: ("{{ item }} is defined") and ("{{ item }} | length > 0")
   with_items:
-    - ctrl_tarball_src
-    - ctrl_install_path
+    - controller_fqdn
+    - environment_name
+    - app_name
+    - component_name
+    - controller_auth_token
 
 - name: Build JSON payload
   template: src={{app_component}}.j2 dest={{app_component}}.json
@@ -47,7 +50,7 @@
    return_content: yes
    validate_certs: no
   headers:
-    Cookie: "{{controller_auth_token}}"
+    Cookie: "{{ controller_auth_token }}"
   register: application_component
   # error handling needs work
   until: (application_component is defined ) and
@@ -56,9 +59,9 @@
          (( application_service.json.status.desired != None ) and ( "PROVISIONED" in application_service.json.status.desired.phase )))
   retries: 85
   delay: 10
-  # not_applicable means that no changes will be made
-  # provisioned state is achieved when the changes are complete
-  # when an empty spec is provided the app and services will be deleted and the phase can be undefined
+  # response behavior notes
+  #
+  #
 
 - name: show component details
   debug: 
