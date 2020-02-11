@@ -8,7 +8,6 @@ component_name
 
 # structure for component details:
 ---
----
 metadata:
   displayName: string
   description: string
@@ -18,7 +17,7 @@ metadata:
 ingress:
   uris:
     "{{ingress_uri}}":
-      matchMethod:
+      matchMethod: #enum
       - PREFIX #default
       - REGEX
       - REGEX_CASE_SENSITIVE
@@ -29,15 +28,13 @@ ingress:
           ref: "{{ingress_uri_cert_ref}}"
         protocols: string
         cipher: string
-        preferServiceCipherServiceConfigState:
-        - ENABLED
-        - DISABLED
-        sessionCache:
-        - 'OFF'
+        preferServiceCipherServiceConfigState: DISABLED
+        sessionCache: #enum
+        - 'OFF' #default
         - NONE
         - BUILTIN
         - SHARED
-    methods:
+    methods: #array (of enum)
     - POST
     - GET
     - PUT
@@ -47,30 +44,24 @@ ingress:
     - TRACE
     - OPTIONS
     - CONNECT
-    headers:
+    headers: #array
     - name: string
-      nameMatchMethod:
+      nameMatchMethod: #enum
       - PREFIX
       - REGEX
       - REGEX_CASE_SENSITIVE
       - SUFFIX
       - EXACT
-      value: string
-      valueMatchMethod:
+    - value: string
+      valueMatchMethod: #enum
       - PREFIX
       - REGEX
       - REGEX_CASE_SENSITIVE
       - SUFFIX
       - EXACT
-    http2:
-    - ENABLED
-    - DISABLED
-    spdy:
-    - ENABLED
-    - DISABLED
-    proxyProtocol:
-    - ENABLED
-    - DISABLED
+    http2: DISABLED
+    spdy: DISABLED
+    proxyProtocol: DISABLED
     setFib: 0
     fastOpen: 0
     backlog: 0
@@ -79,13 +70,9 @@ ingress:
     acceptFilter:
     - DATA_READY
     - HTTP_READY
-    deferred:
-    - ENABLED
-    - DISABLED
-    isIpv6Only: bool
-    reusePort:
-    - ENABLED
-    - DISABLED
+    deferred: DISABLED
+    isIpv6Only: false
+    reusePort: DISABLED
     tls:  # optional for SNI routing scenarios applies to all incoming URIs
       certRef:
         ref: "{{ingress_cert_ref}}"
@@ -99,37 +86,33 @@ ingress:
       - NONE
       - BUILTIN
       - SHARED
-    notFoundStatusCode: 0
+    notFoundStatusCode: 404
     gatewayRefs:
     - ref: "{{ingress_gateway_ref}}"
     tcpKeepAlive:
-      state:
-      - ENABLED
-      - DISABLED
+      state: DISABLED
       idle: string
       interval: string
       count: 0
 backend:
-  workloadGroups:
+  workloadGroups: #array
   - "{{workload_group}}":
       locationRefs:
       - ref: "{{workload_location_ref}}"
       uris:
       - "{{workload_uri}}":
-          weight: 0
+          weight: 1
           maxConns: 0
-          maxFails: 0
-          failTimeout: string
-          isBackup: bool
-          isDown: bool
-          resolve:
-          - ENABLED
-          - DISABLED
+          maxFails: 1
+          failTimeout: 10s
+          isBackup: false
+          isDown: false
+          resolve: DISABLED
           route: string
           service: string
           slowStart: 0
-          isDrain: bool
-      loadBalancingMethod:
+          isDrain: false
+      loadBalancingMethod: #one of 
       - ROUND_ROBIN
       - IPHASH
       - LEAST_CONNECTIONS
@@ -147,7 +130,7 @@ backend:
         - LEAST_CONNECTIONS
         - LEAST_TIME_HEADER
         - LEAST_TIME_LAST_BYTE
-      sessionPersistence:
+      sessionPersistence: #one of
       - COOKIE:
         - srvID: string
         - expireTime: string
@@ -162,54 +145,46 @@ backend:
         - lookup: string
       serviceDiscovery:
         dnsResolver:
-          uris: string
+          uris: string #array
           ttl: string
           failTimeout: string
   monitoring:
-    defaultState:
-    - HEALTHY
-    - UNHEALTHY
-    interval: 0
-    timeout: 0
-    consecutiveSuccessThreshold: 0
-    consecutiveFailureThreshold: 0
-    port: 0
-    uri: string
+    defaultState: HEALTHY
+    interval: 5
+    timeout: 1
+    consecutiveSuccessThreshold: 1
+    consecutiveFailureThreshold: 1
+    port: 443
+    uri: "/"
     response:
       status:
         range:
-          startCode: 0
-          endCode: 0
-        codes: []
-        match: bool
+          startCode: 100
+          endCode: 599
+        codes: [ 100, 599 ]
+        match: true
       headers:
         content: string
-        match: bool
+        match: true
       body:
         content: string
-        match: bool
-  preserveHostHeader:
-  - ENABLED
-  - DISABLED
+        match: true
+  preserveHostHeader: DISABLED
   keepAlive:
     connections: 0
     requestsPerConn: 0
-    idleTimeout: string
+    idleTimeout: 1h
   queue:
     lenght: 0
-    timeOut: string
+    timeOut: 1h
   httpVersion: string
-  ntlmAuthentication:
-  - ENABLED
-  - DISABLED
+  ntlmAuthentication: DISABLED
   persistentState: string
 programmability:
   uriRewrites:
   - incomingPattern: string
     rewritePattern: string
-  httpHttpsRedirect:
-  - ENABLED
-  - DISABLED
+  httpHttpsRedirect: DISABLED
   uriRedirects:
   - incomingPattern: string
     rewritePattern: string
@@ -244,21 +219,19 @@ programmability:
     headerName: string
     incomingValuePattern: regex
 logging:
-  errorLog:
-  - ENABLED
-  - DISABLED
+  errorLog: DISABLED
   accessLog:
-  - ENABLED
-  - DISABLED
+    state: DISABLED
+    format: string
 security:
   strategyRef:
     ref: "{{sec_strategy_ref}}"
   waf:
-    isEnabled: bool
-    isMonitorOnly: bool
+    isEnabled: true
+    isMonitorOnly: true
     signatureOverrides:
       action: IGNORE
-    technologyStack: []
+    technologyStack: [ ANGULAR_JS", "JAVASCRIPT", "LINUX", "MYSQL", "PYTHON" ]
   identityProviderRefs:
   - ref: "{{apim_id_provider_ref}}"
   apiKeyClientAuth:
@@ -287,18 +260,16 @@ security:
     action:
     - ALLOW
     - DENY
-    denyStatusCode: 0
+    denyStatusCode: 404
   rateLimit:
-    rate: 0
+    rate: 1
     rateMeasure:
     - SECONDS
     - MINUTES
     burst: 0
     delay: 0
-    statusCode: 0
+    statusCode: 429
     key: "{{rate_nginx_variable}}"
-  interceptWorkloadErrors:
-  - ENABLED
-  - DISABLED
+  interceptWorkloadErrors: DISABLED
 publishedApiRefs:
 - ref: "{{published_api_ref}}"
