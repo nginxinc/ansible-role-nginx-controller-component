@@ -25,7 +25,14 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                     }
                 },
                 "methods": [ "POST", "GET", "PUT", "DELETE", "PATCH", "HEAD", "TRACE", "OPTIONS", "CONNECT" ],
-                "headers": [  ],
+                "headers": [
+                    {
+                        "name": "string",
+                        "nameMatchMethod": [ "PREFIX", "REGEX", "REGEX_CASE_SENSITIVE", "SUFFIX", "EXACT" ],
+                        "value": "string",
+                        "valueMatchMethod": [ "PREFIX", "REGEX", "REGEX_CASE_SENSITIVE", "SUFFIX", "EXACT" ]
+                    }
+                ],
                 "http2": ["ENABLED", "DISABLED"],
                 "spdy": ["ENABLED", "DISABLED"],
                 "proxyProtocol": ["ENABLED", "DISABLED"],
