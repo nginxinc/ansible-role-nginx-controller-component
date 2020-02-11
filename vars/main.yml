@@ -23,7 +23,7 @@ ingress:
       - REGEX_CASE_SENSITIVE
       - SUFFIX
       - EXACT
-      tls: # optional for SNI routing scenarios applies to individual ingress URIs
+      tls: # optional for SNI routing scenarios applies to individual ingress URIs (foo.example.com)
         certRef:
           ref: "{{ingress_uri_cert_ref}}"
         protocols: string
@@ -73,7 +73,7 @@ ingress:
     deferred: DISABLED
     isIpv6Only: false
     reusePort: DISABLED
-    tls:  # optional for SNI routing scenarios applies to all incoming URIs
+    tls:  # optional for SNI routing scenarios applies to all incoming URIs (*.example.com)
       certRef:
         ref: "{{ingress_cert_ref}}"
       protocols: string
