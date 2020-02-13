@@ -8,12 +8,16 @@ component_name
 
 # structure for component details:
 ---
-metadata:
-  displayName: string
-  description: string
-  tags:
-  - tag
-  - tag
+# component:
+#   name: # name of the gateway
+#   displayName: # friendly display name
+#   description: # complete sentence description
+#   instance_refs:      # instance(s) this gateway configuration is applied to (this must exist first)
+#   certificate_ref:   # optional: required if https/tls (this must exist first)
+#   tags:
+#   - tag1
+#   - tag2
+
 ingress:
   uris:
     "{{ingress_uri}}":
