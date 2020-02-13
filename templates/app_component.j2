@@ -6,12 +6,17 @@ All else should only be completed if a value is passed.
 Name is not required in metadata as it is being passed in the URI of the PUT. 
 #}
 {
+    "metadata": {
+        "displayName": "{{component.displayname}}",
+        "description": "{{component.description}}",
+        "tags": [
+{% for tag in component.tags %}
+            "{{tag}}"{% if not loop.last %}, 
+{% endif %}
+{% endfor %}{{''}}
+        ]
+    },
     "desiredState": {
-        "metadata": {
-            "displayName": "string",
-            "description": "string",
-            "tags": [ "tag", "tag" ]
-        },
         "ingress": {
             "uris": {
                 "{{ingress_uri}}": { 
