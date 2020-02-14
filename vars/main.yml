@@ -1,10 +1,10 @@
 ---
 # vars file for ansible-role-nginx-controller-component
 
-controller_fqdn
-environment_name
-app_name
-component_name
+# controller_fqdn:
+# environment_name:
+# app_name:
+# component_name:
 
 # structure for component details:
 ---
@@ -18,262 +18,262 @@ component_name
 #   - tag1
 #   - tag2
 
-ingress:
-  uris:
-    "{{ingress_uri}}":
-      matchMethod: #enum
-      - PREFIX #default
-      - REGEX
-      - REGEX_CASE_SENSITIVE
-      - SUFFIX
-      - EXACT
-      tls: # optional for SNI routing scenarios applies to individual ingress URIs (foo.example.com)
-        certRef:
-          ref: "{{ingress_uri_cert_ref}}"
-        protocols: string
-        cipher: string
-        preferServiceCipherServiceConfigState: DISABLED
-        sessionCache: #enum
-        - 'OFF' #default
-        - NONE
-        - BUILTIN
-        - SHARED
-    methods: #array (of enum)
-    - POST
-    - GET
-    - PUT
-    - DELETE
-    - PATCH
-    - HEAD
-    - TRACE
-    - OPTIONS
-    - CONNECT
-    headers: #array
-    - name: string
-      nameMatchMethod: #enum
-      - PREFIX
-      - REGEX
-      - REGEX_CASE_SENSITIVE
-      - SUFFIX
-      - EXACT
-    - value: string
-      valueMatchMethod: #enum
-      - PREFIX
-      - REGEX
-      - REGEX_CASE_SENSITIVE
-      - SUFFIX
-      - EXACT
-    http2: DISABLED
-    spdy: DISABLED
-    proxyProtocol: DISABLED
-    setFib: 0
-    fastOpen: 0
-    backlog: 0
-    receiveBufferSize: string
-    sendBufferSize: string
-    acceptFilter:
-    - DATA_READY
-    - HTTP_READY
-    deferred: DISABLED
-    isIpv6Only: false
-    reusePort: DISABLED
-    tls:  # optional for SNI routing scenarios applies to all incoming URIs (*.example.com)
-      certRef:
-        ref: "{{ingress_cert_ref}}"
-      protocols: string
-      cipher: string
-      preferServiceCipherServiceConfigState:
-      - ENABLED
-      - DISABLED
-      sessionCache:
-      - 'OFF'
-      - NONE
-      - BUILTIN
-      - SHARED
-    notFoundStatusCode: 404
-    gatewayRefs:
-    - ref: "{{ingress_gateway_ref}}"
-    tcpKeepAlive:
-      state: DISABLED
-      idle: string
-      interval: string
-      count: 0
-backend:
-  workloadGroups: #array
-  - "{{workload_group}}":
-      locationRefs:
-      - ref: "{{workload_location_ref}}"
-      uris:
-      - "{{workload_uri}}":
-          weight: 1
-          maxConns: 0
-          maxFails: 1
-          failTimeout: 10s
-          isBackup: false
-          isDown: false
-          resolve: DISABLED
-          route: string
-          service: string
-          slowStart: 0
-          isDrain: false
-      loadBalancingMethod: #one of 
-      - ROUND_ROBIN
-      - IPHASH
-      - LEAST_CONNECTIONS
-      - HASH:
-          type: 
-          userKey: 
-          consistentHash:
-          - ENABLED
-          - DISABLED
-      - LEAST_TIME:
-        - HEADER
-        - LAST_BYTE
-        - LAST_BYTE_INFLIGHT
-      - RANDOM:
-        - LEAST_CONNECTIONS
-        - LEAST_TIME_HEADER
-        - LEAST_TIME_LAST_BYTE
-      sessionPersistence: #one of
-      - COOKIE:
-        - srvID: string
-        - expireTime: string
-        - domain: string
-        - path: string
-      - ROUTE:
-        - COOKIE
-        - URI
-        - BOTH
-      - COOKIE_LEARN:
-        - create: string
-        - lookup: string
-      serviceDiscovery:
-        dnsResolver:
-          uris: string #array
-          ttl: string
-          failTimeout: string
-  monitoring:
-    defaultState: HEALTHY
-    interval: 5
-    timeout: 1
-    consecutiveSuccessThreshold: 1
-    consecutiveFailureThreshold: 1
-    port: 443
-    uri: "/"
-    response:
-      status:
-        range:
-          startCode: 100
-          endCode: 599
-        codes: [ 100, 599 ]
-        match: true
-      headers:
-        content: string
-        match: true
-      body:
-        content: string
-        match: true
-  preserveHostHeader: DISABLED
-  keepAlive:
-    connections: 0
-    requestsPerConn: 0
-    idleTimeout: 1h
-  queue:
-    lenght: 0
-    timeOut: 1h
-  httpVersion: string
-  ntlmAuthentication: DISABLED
-  persistentState: string
-programmability:
-  uriRewrites:
-  - incomingPattern: string
-    rewritePattern: string
-  httpHttpsRedirect: DISABLED
-  uriRedirects:
-  - incomingPattern: string
-    rewritePattern: string
-    responseCode: 0
-  cookieModifications:
-  - action:
-    - ADD
-    - MODIFY
-    - DELETE
-    cookieName: string
-    cookieValue: string
-  requestHeaderModifications:
-  - action: ADD
-    headerName: string
-    headerValue: string
-  - action: MODIFY
-    headerName: string
-    incomingValuePattern: regex
-    rewriteValuePattern: regex
-  - action: DELETE
-    headerName: string
-    incomingValuePattern: regex
-  responseHeaderModifications:
-  - action: ADD
-    headerName: string
-    headerValue: string
-  - action: MODIFY
-    headerName: string
-    incomingValuePattern: regex
-    rewriteValuePattern: regex
-  - action: DELETE
-    headerName: string
-    incomingValuePattern: regex
-logging:
-  errorLog: DISABLED
-  accessLog:
-    state: DISABLED
-    format: string
-security:
-  strategyRef:
-    ref: "{{sec_strategy_ref}}"
-  waf:
-    isEnabled: true
-    isMonitorOnly: true
-    signatureOverrides:
-      action: IGNORE
-    technologyStack: [ ANGULAR_JS", "JAVASCRIPT", "LINUX", "MYSQL", "PYTHON" ]
-  identityProviderRefs:
-  - ref: "{{apim_id_provider_ref}}"
-  apiKeyClientAuth:
-    keyLocation:
-    - HEADER
-    - QUERY_PARAM
-    key: string
-  jwtClientAuth:
-    keyLocation:
-    - BEARER
-    - HEADER
-    - QUERY_PARAM
-    - COOKIE
-    key: string
-  conditionalAuth:
-    sourceType:
-    - HEADER
-    - JWT_CLAIM
-    sourceKey: string
-    comparisonType:
-    - EQUALS
-    - NOT_EQUALS
-    - IN
-    - CONTAINS
-    comparisonValues: string
-    action:
-    - ALLOW
-    - DENY
-    denyStatusCode: 404
-  rateLimit:
-    rate: 1
-    rateMeasure:
-    - SECONDS
-    - MINUTES
-    burst: 0
-    delay: 0
-    statusCode: 429
-    key: "{{rate_nginx_variable}}"
-  interceptWorkloadErrors: DISABLED
-publishedApiRefs:
-- ref: "{{published_api_ref}}"
+# ingress:
+#   uris:
+#     "{{ingress_uri}}":
+#       matchMethod: #enum
+#       - PREFIX #default
+#       - REGEX
+#       - REGEX_CASE_SENSITIVE
+#       - SUFFIX
+#       - EXACT
+#       tls: # optional for SNI routing scenarios applies to individual ingress URIs (foo.example.com)
+#         certRef:
+#           ref: "{{ingress_uri_cert_ref}}"
+#         protocols: string
+#         cipher: string
+#         preferServiceCipherServiceConfigState: DISABLED
+#         sessionCache: #enum
+#         - 'OFF' #default
+#         - NONE
+#         - BUILTIN
+#         - SHARED
+#     methods: #array (of enum)
+#     - POST
+#     - GET
+#     - PUT
+#     - DELETE
+#     - PATCH
+#     - HEAD
+#     - TRACE
+#     - OPTIONS
+#     - CONNECT
+#     headers: #array
+#     - name: string
+#       nameMatchMethod: #enum
+#       - PREFIX
+#       - REGEX
+#       - REGEX_CASE_SENSITIVE
+#       - SUFFIX
+#       - EXACT
+#     - value: string
+#       valueMatchMethod: #enum
+#       - PREFIX
+#       - REGEX
+#       - REGEX_CASE_SENSITIVE
+#       - SUFFIX
+#       - EXACT
+#     http2: DISABLED
+#     spdy: DISABLED
+#     proxyProtocol: DISABLED
+#     setFib: 0
+#     fastOpen: 0
+#     backlog: 0
+#     receiveBufferSize: string
+#     sendBufferSize: string
+#     acceptFilter:
+#     - DATA_READY
+#     - HTTP_READY
+#     deferred: DISABLED
+#     isIpv6Only: false
+#     reusePort: DISABLED
+#     tls:  # optional for SNI routing scenarios applies to all incoming URIs (*.example.com)
+#       certRef:
+#         ref: "{{ingress_cert_ref}}"
+#       protocols: string
+#       cipher: string
+#       preferServiceCipherServiceConfigState:
+#       - ENABLED
+#       - DISABLED
+#       sessionCache:
+#       - 'OFF'
+#       - NONE
+#       - BUILTIN
+#       - SHARED
+#     notFoundStatusCode: 404
+#     gatewayRefs:
+#     - ref: "{{ingress_gateway_ref}}"
+#     tcpKeepAlive:
+#       state: DISABLED
+#       idle: string
+#       interval: string
+#       count: 0
+# backend:
+#   workloadGroups: #array
+#   - "{{workload_group}}":
+#       locationRefs:
+#       - ref: "{{workload_location_ref}}"
+#       uris:
+#       - "{{workload_uri}}":
+#           weight: 1
+#           maxConns: 0
+#           maxFails: 1
+#           failTimeout: 10s
+#           isBackup: false
+#           isDown: false
+#           resolve: DISABLED
+#           route: string
+#           service: string
+#           slowStart: 0
+#           isDrain: false
+#       loadBalancingMethod: #one of 
+#       - ROUND_ROBIN
+#       - IPHASH
+#       - LEAST_CONNECTIONS
+#       - HASH:
+#           type: 
+#           userKey: 
+#           consistentHash:
+#           - ENABLED
+#           - DISABLED
+#       - LEAST_TIME:
+#         - HEADER
+#         - LAST_BYTE
+#         - LAST_BYTE_INFLIGHT
+#       - RANDOM:
+#         - LEAST_CONNECTIONS
+#         - LEAST_TIME_HEADER
+#         - LEAST_TIME_LAST_BYTE
+#       sessionPersistence: #one of
+#       - COOKIE:
+#         - srvID: string
+#         - expireTime: string
+#         - domain: string
+#         - path: string
+#       - ROUTE:
+#         - COOKIE
+#         - URI
+#         - BOTH
+#       - COOKIE_LEARN:
+#         - create: string
+#         - lookup: string
+#       serviceDiscovery:
+#         dnsResolver:
+#           uris: string #array
+#           ttl: string
+#           failTimeout: string
+#   monitoring:
+#     defaultState: HEALTHY
+#     interval: 5
+#     timeout: 1
+#     consecutiveSuccessThreshold: 1
+#     consecutiveFailureThreshold: 1
+#     port: 443
+#     uri: "/"
+#     response:
+#       status:
+#         range:
+#           startCode: 100
+#           endCode: 599
+#         codes: [ 100, 599 ]
+#         match: true
+#       headers:
+#         content: string
+#         match: true
+#       body:
+#         content: string
+#         match: true
+#   preserveHostHeader: DISABLED
+#   keepAlive:
+#     connections: 0
+#     requestsPerConn: 0
+#     idleTimeout: 1h
+#   queue:
+#     lenght: 0
+#     timeOut: 1h
+#   httpVersion: string
+#   ntlmAuthentication: DISABLED
+#   persistentState: string
+# programmability:
+#   uriRewrites:
+#   - incomingPattern: string
+#     rewritePattern: string
+#   httpHttpsRedirect: DISABLED
+#   uriRedirects:
+#   - incomingPattern: string
+#     rewritePattern: string
+#     responseCode: 0
+#   cookieModifications:
+#   - action:
+#     - ADD
+#     - MODIFY
+#     - DELETE
+#     cookieName: string
+#     cookieValue: string
+#   requestHeaderModifications:
+#   - action: ADD
+#     headerName: string
+#     headerValue: string
+#   - action: MODIFY
+#     headerName: string
+#     incomingValuePattern: regex
+#     rewriteValuePattern: regex
+#   - action: DELETE
+#     headerName: string
+#     incomingValuePattern: regex
+#   responseHeaderModifications:
+#   - action: ADD
+#     headerName: string
+#     headerValue: string
+#   - action: MODIFY
+#     headerName: string
+#     incomingValuePattern: regex
+#     rewriteValuePattern: regex
+#   - action: DELETE
+#     headerName: string
+#     incomingValuePattern: regex
+# logging:
+#   errorLog: DISABLED
+#   accessLog:
+#     state: DISABLED
+#     format: string
+# security:
+#   strategyRef:
+#     ref: "{{sec_strategy_ref}}"
+#   waf:
+#     isEnabled: true
+#     isMonitorOnly: true
+#     signatureOverrides:
+#       action: IGNORE
+#     technologyStack: [ ANGULAR_JS", "JAVASCRIPT", "LINUX", "MYSQL", "PYTHON" ]
+#   identityProviderRefs:
+#   - ref: "{{apim_id_provider_ref}}"
+#   apiKeyClientAuth:
+#     keyLocation:
+#     - HEADER
+#     - QUERY_PARAM
+#     key: string
+#   jwtClientAuth:
+#     keyLocation:
+#     - BEARER
+#     - HEADER
+#     - QUERY_PARAM
+#     - COOKIE
+#     key: string
+#   conditionalAuth:
+#     sourceType:
+#     - HEADER
+#     - JWT_CLAIM
+#     sourceKey: string
+#     comparisonType:
+#     - EQUALS
+#     - NOT_EQUALS
+#     - IN
+#     - CONTAINS
+#     comparisonValues: string
+#     action:
+#     - ALLOW
+#     - DENY
+#     denyStatusCode: 404
+#   rateLimit:
+#     rate: 1
+#     rateMeasure:
+#     - SECONDS
+#     - MINUTES
+#     burst: 0
+#     delay: 0
+#     statusCode: 429
+#     key: "{{rate_nginx_variable}}"
+#   interceptWorkloadErrors: DISABLED
+# publishedApiRefs:
+# - ref: "{{published_api_ref}}"
