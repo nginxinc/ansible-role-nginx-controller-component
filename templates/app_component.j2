@@ -7,67 +7,150 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
 #}
 {
     "metadata": {
-        "displayName": "{{component.displayname}}",
-        "description": "{{component.description}}",
-        "tags": [
-{% for tag in component.tags %}
-            "{{tag}}"{% if not loop.last %}, 
-{% endif %}
-{% endfor %}{{''}}
+        "name": "{{component.name}}"
+    {% if component.displayName is defined %}
+        ,"displayName": "{{component.displayName}}"
+    {% endif %}
+    {% if component.description is defined %}
+        ,"description": "{{component.description}}"
+    {% endif %}
+    {% if component.tags[0] is defined %}
+        ,"tags": [
+        {% for tag in component.tags %}
+            "{{tag}}"{% if not loop.last %},{% endif %}
+        {% endfor %}
         ]
+    {% endif %}
     },
     "desiredState": {
         "ingress": {
             "uris": {
-                "{{ingress_uri}}": { 
-                    "matchMethod": [ "PREFIX", "REGEX", "REGEX_CASE_SENSITIVE", "SUFFIX", "EXACT" ],
+    {% for uri in ingress.uris %}
+                "{{uri}}": { 
+        {% if uri.matchMethod is defined %}
+                    "matchMethod": "{{uri.matchMethod}}",
+        {% endif %}
+        {% if uri.tls.certRef.ref is defined %}
                     "tls": {
-                        "certRef": { "ref": "{{ingress_uri_cert_ref}}" },
-                        "protocols": "string",
-                        "cipher": "string",
-                        "preferServiceCipherServiceConfigState": ["ENABLED", "DISABLED"],
-                        "sessionCache": ["OFF", "NONE", "BUILTIN", "SHARED"]
+                        "certRef": { "ref": "{{uri.tls.certRef.ref}}" }
+            {% if uri.tls.protocols[0] is defined %}
+                        ,"protocols": [
+                {% for protocol in uri.tls.protocols %}
+                            "{{protocol}}"{% if not loop.last %},{% endif %}
+                {% endfor %}{{''}}
+                        ]
+            {% endif %}
+            {% if uri.tls.cipher is defined %}
+                        ,"cipher": "{{uri.tls.cipher}}"
+            {% endif %}
+            {% if uri.tls.preferServiceCipherServiceConfigState is defined %}
+                        ,"preferServiceCipherServiceConfigState": "{{uri.tls.preferServiceCipherServiceConfigState}}"
+            {% endif %}
+            {% if uri.tls.sessionCache is defined %}
+                        ,"sessionCache": "{{uri.tls.sessionCache}}"
+            {% endif %}
                     }
-                },
-                "methods": [ "POST", "GET", "PUT", "DELETE", "PATCH", "HEAD", "TRACE", "OPTIONS", "CONNECT" ],
-                "headers": [
-                    {
-                        "name": "string",
-                        "nameMatchMethod": [ "PREFIX", "REGEX", "REGEX_CASE_SENSITIVE", "SUFFIX", "EXACT" ],
-                        "value": "string",
-                        "valueMatchMethod": [ "PREFIX", "REGEX", "REGEX_CASE_SENSITIVE", "SUFFIX", "EXACT" ]
-                    }
-                ],
-                "http2": ["ENABLED", "DISABLED"],
-                "spdy": ["ENABLED", "DISABLED"],
-                "proxyProtocol": ["ENABLED", "DISABLED"],
-                "setFib": 0,
-                "fastOpen": 0,
-                "backlog": 0,
-                "receiveBufferSize": "string",
-                "sendBufferSize": "string",
-                "acceptFilter": ["DATA_READY", "HTTP_READY"],
-                "deferred": ["ENABLED", "DISABLED"],
-                "isIpv6Only": "bool",
-                "reusePort": ["ENABLED", "DISABLED"],
-                "tls": { 
-                    "certRef": { "ref": "{{ingress_cert_ref}}"},
-                    "protocols": "string",
-                    "cipher": "string",
-                    "preferServiceCipherServiceConfigState": ["ENABLED", "DISABLED"] ,
-                    "sessionCache": ["OFF", "NONE", "BUILTIN", "SHARED"]
-                },
-                "notFoundStatusCode": 0,
-                "gatewayRefs": [
-                    { "ref": "{{ingress_gateway_ref}}" }
-                ],
-                "tcpKeepAlive": {
-                    "state": ["ENABLED", "DISABLED"],
-                    "idle": "string",
-                    "interval": "string",
-                    "count": 0
-                }
+        {% endif %}
+                }{% if not loop.last %},{% endif %}
+    {% endfor %}{{''}}
             }
+    {% if ingress.methods is defined %}
+            ,"methods": [
+        {% for method in ingress.methods %}
+                "{{method}}"{% if not loop.last %},{% endif %}
+        {% endfor %}{{''}}
+            ]
+    {% endif %}
+    {% if ingress.headers is defined %}
+            ,"headers": [
+        {% for header in ingress.headers %}
+                {
+            {% if header.name is defined %}
+                    "name": "{{header.name}}",
+                    "nameMatchMethod": "{{header.nameMatchMethod}}"
+            {% endif %}
+            {% if header.value is defined %}
+                    "value": "{{header.value}}",
+                    "valueMatchMethod": "{{header.valueMatchMethod}}"
+            {% endif %}
+                }{% if not loop.last %},{% endif %}
+        {% endfor %}{{''}}
+            ]
+    {% endif %}
+    {% if ingress.http2 is defined %}
+            ,"http2": "{{ingress.http2}}"
+    {% endif %}
+    {% if ingress.spdy is defined %}
+            ,"spdy": "{{ingress.spdy}}"
+    {% endif %}
+    {% if ingress.proxyProtocol is defined %}
+            ,"proxyProtocol": "{{ingress.proxyProtocol}}"
+    {% endif %}
+    {% if ingress.setFib is defined %}
+            ,"setFib": "{{ingress.setFib}}"
+    {% endif %}
+    {% if ingress.fastOpen is defined %}
+            ,"fastOpen": "{{ingress.fastOpen}}"
+    {% endif %}
+    {% if ingress.backlog is defined %}
+            ,"backlog": "{{ingress.backlog}}"
+    {% endif %}
+    {% if ingress.receiveBufferSize is defined %}
+            ,"receiveBufferSize": "{{ingress.receiveBufferSize}}"
+    {% endif %}
+    {% if ingress.sendBufferSize is defined %}
+            ,"sendBufferSize": "{{ingress.sendBufferSize}}"
+    {% endif %}
+    {% if ingress.acceptFilter is defined %}
+            ,"acceptFilter": "{{ingress.acceptFilter}}"
+    {% endif %}
+    {% if ingress.deferred is defined %}
+            ,"deferred": "{{ingress.deferred}}"
+    {% endif %}
+    {% if ingress.isIpv6Only is defined %}
+            ,"isIpv6Only": "{{ingress.isIpv6Only}}"
+    {% endif %}
+    {% if ingress.reusePort is defined %}
+            ,"reusePort": "{{ingress.reusePort}}"]
+    {% endif %}
+    {% if ingress.tls.certRef.ref is defined %}
+            ,"tls": {
+                "certRef": { "ref": "{{ingress.tls.certRef.ref}}" }
+    {% endif %}
+    {% if ingress.tls.protocols[0] is defined %}                
+                ,"protocols": [
+        {% for protocol in ingress.tls.protocols %}
+                    "{{protocol}}"{% if not loop.last %},{% endif %}
+        {% endfor %}{{''}}
+                ]
+    {% endif %}
+    {% if ingress.tls.cipher is defined %}
+                ,"cipher": "{{ingress.tls.cipher}}"
+                {% endif %}
+    {% if ingress.tls.preferServiceCipherServiceConfigState is defined %}
+                ,"preferServiceCipherServiceConfigState": "{{ingress.tls.preferServiceCipherServiceConfigState}}"
+    {% endif %}
+    {% if ingress.tls.sessionCache is defined %}
+                ,"sessionCache": "{{ingress.tls.sessionCache}}"
+    {% endif %}
+            }
+    {% if ingress.tcpKeepAlive.idle is defined %}
+            ,"tcpKeepAlive": {
+                "idle": "string",
+                "interval": "string",
+                "count": 0
+            }
+    {% endif %}
+    {% if ingress.notFoundStatusCode is defined %}
+            ,"notFoundStatusCode": "{{ingress.notFoundStatusCode}}"
+    {% endif %}
+            ,"gatewayRefs": [
+    {% for gatewayRef in ingress.gatewayRefs %}
+                {
+                    "ref": "{{gatewayRef}}"
+                }{% if not loop.last %},{% endif %}
+    {% endfor %}{{''}}
+            ]
         },
         "backend": {
             "workloadGroups": [
