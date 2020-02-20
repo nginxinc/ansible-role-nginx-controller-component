@@ -52,8 +52,8 @@
 #     cipher: string
 #     preferServiceCipherServiceConfigState: # ENABLED,DISABLED
 #     sessionCache: # OFF,NONE,BUILTIN,SHARED
-#   placement: #required
-#     instanceRefs:
+#   notFoundStatusCode: #optional code to return when resource is not found: int (i.e. 404)
+#   gatewayRefs: #required
 #     - ref: "{{gateway_ref}}"
 #   tcpKeepAlive: #optional section
 #     idle: string

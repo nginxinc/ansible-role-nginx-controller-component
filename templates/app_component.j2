@@ -141,7 +141,9 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                 "count": 0
             }
     {% endif %}
-            ,"notFoundStatusCode": 0,
+    {% if ingress.notFoundStatusCode is defined %}
+            ,"notFoundStatusCode": "{{ingress.notFoundStatusCode}}"
+    {% endif %}
             ,"gatewayRefs": [
     {% for gatewayRef in ingress.gatewayRefs %}
                 {
