@@ -9,95 +9,56 @@
 # structure for component details:
 ---
 # component:
-#   name: # name of the gateway
+#   name: # name of the gateway REQUIRED
 #   displayName: # friendly display name
 #   description: # complete sentence description
-#   instance_refs:      # instance(s) this gateway configuration is applied to (this must exist first)
-#   certificate_ref:   # optional: required if https/tls (this must exist first)
 #   tags:
 #   - tag1
 #   - tag2
 
 # ingress:
 #   uris:
-#     "{{ingress_uri}}":
-#       matchMethod: #enum
-#       - PREFIX #default
-#       - REGEX
-#       - REGEX_CASE_SENSITIVE
-#       - SUFFIX
-#       - EXACT
-#       tls: # optional for SNI routing scenarios applies to individual ingress URIs (foo.example.com)
+#   - "{{uri}}": #one URI for the component of the service relative to the gateway (i.e. '/' or '/wiki')
+#       matchMethod: PREFIX #optional: PREFIX,REGEX,REGEX_CASE_SENSITIVE,SUFFIX,EXACT
+#       tls: #optional section: per-URI certificate if multiple URIs in the Component
 #         certRef:
 #           ref: "{{ingress_uri_cert_ref}}"
-#         protocols: string
+#         protocols: # array: TLSv1,TLSv1.1,TLSv1.2,TLSv1.3,SSLv2,SSLv3
 #         cipher: string
-#         preferServiceCipherServiceConfigState: DISABLED
-#         sessionCache: #enum
-#         - 'OFF' #default
-#         - NONE
-#         - BUILTIN
-#         - SHARED
-#     methods: #array (of enum)
-#     - POST
-#     - GET
-#     - PUT
-#     - DELETE
-#     - PATCH
-#     - HEAD
-#     - TRACE
-#     - OPTIONS
-#     - CONNECT
-#     headers: #array
-#     - name: string
-#       nameMatchMethod: #enum
-#       - PREFIX
-#       - REGEX
-#       - REGEX_CASE_SENSITIVE
-#       - SUFFIX
-#       - EXACT
-#     - value: string
-#       valueMatchMethod: #enum
-#       - PREFIX
-#       - REGEX
-#       - REGEX_CASE_SENSITIVE
-#       - SUFFIX
-#       - EXACT
-#     http2: DISABLED
-#     spdy: DISABLED
-#     proxyProtocol: DISABLED
-#     setFib: 0
-#     fastOpen: 0
-#     backlog: 0
-#     receiveBufferSize: string
-#     sendBufferSize: string
-#     acceptFilter:
-#     - DATA_READY
-#     - HTTP_READY
-#     deferred: DISABLED
-#     isIpv6Only: false
-#     reusePort: DISABLED
-#     tls:  # optional for SNI routing scenarios applies to all incoming URIs (*.example.com)
-#       certRef:
-#         ref: "{{ingress_cert_ref}}"
-#       protocols: string
-#       cipher: string
-#       preferServiceCipherServiceConfigState:
-#       - ENABLED
-#       - DISABLED
-#       sessionCache:
-#       - 'OFF'
-#       - NONE
-#       - BUILTIN
-#       - SHARED
-#     notFoundStatusCode: 404
-#     gatewayRefs:
-#     - ref: "{{ingress_gateway_ref}}"
-#     tcpKeepAlive:
-#       state: DISABLED
-#       idle: string
-#       interval: string
-#       count: 0
+#         preferServiceCipherServiceConfigState: # ENABLED,DISABLED
+#         sessionCache: # OFF,NONE,BUILTIN,SHARED
+#   methods: #optional array: POST,GET,PUT,DELETE,PATCH,HEAD,TRACE,OPTIONS,CONNECT
+#   headers: #optional section applies to all URIs
+#   - name: string
+#     nameMatchMethod: #PREFIX,REGEX,REGEX_CASE_SENSITIVE,SUFFIX,EXACT
+#   - value: string
+#     valueMatchMethod: #PREFIX,REGEX,REGEX_CASE_SENSITIVE,SUFFIX,EXACT
+#   http2: #optional applies to all URIs: ENABLED,DISABLED
+#   spdy: #optional applies to all URIs: ENABLED,DISABLED
+#   proxyProtocol: #optional applies to all URIs: ENABLED,DISABLED
+#   setFib: #optional applies to all URIs: int
+#   fastOpen: #optional applies to all URIs: int
+#   backlog: #optional applies to all URIs: int
+#   receiveBufferSize: #optional applies to all URIs: string
+#   sendBufferSize: #optional applies to all URIs: string
+#   acceptFilter: #optional applies to all URIs: DATA_READY,HTTP_READY
+#   deferred: #optional applies to all URIs: ENABLED,DISABLED
+#   isIpv6Only: #optional applies to all URIs: bool
+#   reusePort: #optional applies to all URIs: ENABLED,DISABLED
+#   tls: #optional: applies to all URIs
+#     certRef:
+#       ref: "{{ingress_uri_cert_ref}}"
+#     protocols: # array: TLSv1,TLSv1.1,TLSv1.2,TLSv1.3,SSLv2,SSLv3
+#     cipher: string
+#     preferServiceCipherServiceConfigState: # ENABLED,DISABLED
+#     sessionCache: # OFF,NONE,BUILTIN,SHARED
+#   placement: #required
+#     instanceRefs:
+#     - ref: "{{gateway_ref}}"
+#   tcpKeepAlive: #optional section
+#     idle: string
+#     interval: string
+#     count: 0
 # backend:
 #   workloadGroups: #array
 #   - "{{workload_group}}":
