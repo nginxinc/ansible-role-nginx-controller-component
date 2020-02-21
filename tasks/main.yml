@@ -5,30 +5,29 @@
     that: ("{{ item }} is defined") and ("{{ item }} | length > 0")
   with_items:
     - controller_fqdn
-    - environment_name
-    - app_name
-    - component_name
     - controller_auth_token
-
-- name: Build JSON payload
-  template: src={{app_component}}.j2 dest={{app_component}}.json
+    - environmentName
+    - appName
+    - component.metadata.name
 
 - name: form the component url
   set_fact:
-    component_url: "https://{{controller_fqdn}}/{{api_version}}/services/environments/{{environment_name}}/apps/{{app_name}}/components/{{component_name}}"
+    component_url: "https://{{controller_fqdn}}/{{api_version}}/services/environments/{{environmentName}}/apps/{{appName}}/components/{{component.metadata.name}}"
 
 - name: upsert component (create if absent, change if present)
   uri:
-   url: "{{ component_url }}"
-   method: "PUT"
-   body: "{{(lookup('file','{{app_component}}.json'))}}"
-   body_format: json
-   status_code:
-   - 200
-   return_content: yes
-   validate_certs: no
-  headers:
-    Cookie: "{{controller_auth_token}}"
+    url: "{{ component_url }}"
+    method: "PUT"
+    # body: "{{(lookup('file','app_component.json'))}}"
+    body: "{{ component }}"
+    body_format: json
+    status_code:
+    - 200
+    - 201
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{controller_auth_token}}"
   register: component_status
 
 - name: show component status
@@ -42,27 +41,22 @@
 
 - name: Confirm component is provisioned and not errored
   uri:
-   url: "{{ component_url }}"
-   method: "GET"
-   body_format: json
-   status_code:
-   - 200
-   return_content: yes
-   validate_certs: no
-  headers:
-    Cookie: "{{ controller_auth_token }}"
-  register: application_component
-  # error handling needs work
-  until: (application_component is defined ) and
-         ((( service_stats.json.status.desired != None ) and ( "NOT_APPLICABLE" in service_stats.json.status.desired.phase )) or
-         (( application_service.json.status.active != None ) and ( "PROVISIONED" in application_service.json.status.active.phase )) or
-         (( application_service.json.status.desired != None ) and ( "PROVISIONED" in application_service.json.status.desired.phase )))
-  retries: 85
-  delay: 10
-  # response behavior notes
-  #
-  #
+    url: "{{ component_url }}"
+    method: "GET"
+    body_format: json
+    status_code:
+    - 200
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ controller_auth_token }}"
+  register: component_current_status
+  until: ( component_current_status is defined ) and
+         ( component_current_status.json.currentStatus.state.selfConfigState.isConfiguring != True )
+  retries: 50
+  delay: 2
+  failed_when: ( component_current_status.json.currentStatus.state.selfConfigState.isError == True )
 
 - name: show component details
   debug: 
-    msg: "{{ application_component }}"
+    msg: "{{ component_current_status }}"
