@@ -21,9 +21,9 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
         {% endfor %}
         ]
     {% endif %}
-    },
+    }, {# close metadata #}
     "desiredState": {
-        "ingress": {
+        {# "ingress": {
             "uris": {
     {% for uri in ingress.uris %}
                 "{{uri}}": { 
@@ -151,9 +151,9 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                 }{% if not loop.last %},{% endif %}
     {% endfor %}{{''}}
             ]
-        },
+        }, end ingress section #}
         "backend": {
-            "workloadGroups": [
+            "workloadGroups":
                 {
             {% for workloadGroup in backend.workloadGroups %}
                     "{{workloadGroup}}": 
@@ -161,40 +161,40 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                             {% if workloadGroup.locationRefs[0] is defined %}
                             "locationRefs": [
                                 {% for locationRef in workloadGroup.locationRefs %}
-                                { "ref": "{locationRef}}" }{% if not loop.last %},{% endif %}
+                                { "ref": "{{locationRef}}" }{% if not loop.last %},{% endif %}
                                 {% endfor %}
                             ],
                             {% endif %}
                             "uris": [
                                 {% for workloadUri in workloadGroup.uris %}
                                 {
-                                    "{{workloadUri}}": {
+                                    "{{workloadUri}}": { {# 
                                     {% for option in workloadUri %}
-                                        {% if option.weight is defined %}"weight": "{{option.weight}}"
-                                        {% elif option.maxConns is defined %}"maxConns": "{{option.maxConns}}"
-                                        {% elif option.maxFails is defined %}"maxFails": "{{option.maxFails}}"
-                                        {% elif option.failTimeout is defined %}"failTimeout": "{{option.failTimeout}}"
-                                        {% elif option.isBackup is defined %}"isBackup": "{{option.isBackup}}"
-                                        {% elif option.isDown is defined %}"isDown": "{{option.isDown}}"
-                                        {% elif option.resolve is defined %}"resolve": "{{option.resolve}}"
-                                        {% elif option.route defined %}"route": "{{option.route}}"
-                                        {% elif option.service is defined %}"service": "{{option.service}}"
-                                        {% elif option.slowStart is defined %}"slowStart": "{{option.slowStart}}"
-                                        {% elif option.isDrain is defined %}"isDrain": "{{option.isDrain}}"
+                                        {% if weight in option %}"weight": "{{option.weight}}"
+                                        {% elif maxConns in option %}"maxConns": "{{option.maxConns}}"
+                                        {% elif maxFails in option %}"maxFails": "{{option.maxFails}}"
+                                        {% elif failTimeout in option %}"failTimeout": "{{option.failTimeout}}"
+                                        {% elif isBackup in option %}"isBackup": "{{option.isBackup}}"
+                                        {% elif isDown in option %}"isDown": "{{option.isDown}}"
+                                        {% elif resolve in option %}"resolve": "{{option.resolve}}"
+                                        {% elif route in option %}"route": "{{option.route}}"
+                                        {% elif service in option %}"service": "{{option.service}}"
+                                        {% elif slowStart in option %}"slowStart": "{{option.slowStart}}"
+                                        {% elif isDrain in option %}"isDrain": "{{option.isDrain}}"
                                         {% else %}
                                         {% endif %}{% if not loop.last %},{% endif %}
-                                    {% endfor %}
+                                    {% endfor %} #}
                                     }
                                 }{% if not loop.last %},{% endif %}
                                 {% endfor %}
                             ]
                             {% if workloadGroup.loadBalancingMethod is defined %}
-                                {% if ("ROUND_ROBIN" or "IPHASH" or "LEAST_CONNECTIONS") in workloadGroup.loadBalancingMethod %},"loadBalancingMethod":  "{{workloadGroup.loadBalancingMethod}}"
+                                {# {% if ("ROUND_ROBIN" or "IPHASH" or "LEAST_CONNECTIONS") in workloadGroup.loadBalancingMethod %},"loadBalancingMethod":  "{{workloadGroup.loadBalancingMethod}}"
                                 {% elif workloadGroup.loadBalancingMethod == "HASH" %},"loadBalancingMethod":  "{{workloadGroup.loadBalancingMethod}}": { "type": "{{workloadGroup.loadBalancingMethod.type}}" , "userKey": "{{workloadGroup.loadBalancingMethod.userKey}}", "consistentHash": "{{workloadGroup.loadBalancingMethod.consistentHash}}" } 
                                 {% elif workloadGroup.loadBalancingMethod == "LEAST_TIME" %},"loadBalancingMethod":  "{{workloadGroup.loadBalancingMethod}}": "{{workloadGroup.loadBalancingMethod.LEAST_TIME}}"
                                 {% elif workloadGroup.loadBalancingMethod == "RANDOM" %},"loadBalancingMethod":  "{{workloadGroup.loadBalancingMethod}}": "{{workloadGroup.loadBalancingMethod.RANDOM}}"
                                 {% else %}
-                                {% endif %}{% if not loop.last %},{% endif %}
+                                {% endif %}{% if not loop.last %},{% endif %} #}
                             {% endif %}
                             {% if workloadGroup.sessionPersistence is defined %}
                             ,"sessionPersistence": [ {"COOKIE": [{"srvID": "string"}, {"expireTime": "string"}, {"domain": "string"}, {"path": "string"}]}, {"ROUTE": ["COOKIE", "URI", "BOTH"]}, {"COOKIE_LEARN": [{"create": "string"}, {"lookup": "string"}]}  ],
@@ -206,13 +206,12 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                                         "uris": "string",
                                         "ttl": "string",
                                         "failTimeout": "string"
+                                    }
                                 }
-                            }
                             {% endif %}
-                        }
-                }
+                    }{% if not loop.last %},{% endif %} {# close individual workloadGroup #}
             {% endfor %}
-            ],
+            }, {# close workloadGroups #}
             "monitoring": {
                 "defaultState": ["HEALTHY", "UNHEALTHY"],
                 "interval": 0,
@@ -239,7 +238,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                         "match": "bool"
                     }
                 }
-            },
+            }, {# close monitoring #}
             "preserveHostHeader": ["ENABLED", "DISABLED"],
             "keepAlive": {
                 "connections": 0,
@@ -253,7 +252,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
             "httpVersion": "string",
             "ntlmAuthentication": ["ENABLED", "DISABLED"],
             "persistentState": "string"
-        },
+        }, {# close backend #}
         "programmability": {
             "uriRewrites": [
                 {
@@ -312,12 +311,12 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                     "incomingValuePattern": "regex" 
                 }
             ]
-        },
+        }, {# close programmability #}
         "logging": {
             "errorLog": ["ENABLED", "DISABLED"],
             "accessLog": ["ENABLED", "DISABLED"]
-        },
-        "security": {
+        }
+        {# "security": {
             "strategyRef": { "ref": "{{sec_strategy_ref}}" },
             "waf": {
                 "isEnabled": "bool",
@@ -355,9 +354,9 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                 "key": "{{rate_nginx_variable}}"
             },
             "interceptWorkloadErrors": ["ENABLED", "DISABLED"]
-        },
-        "publishedApiRefs": [ 
+        } #} {# close security #}
+        {# ,"publishedApiRefs": [ 
             { "ref": "{{published_api_ref}}"}
-        ]
-    }
+        ] #}
+    } {# close desiredState #}
 }
