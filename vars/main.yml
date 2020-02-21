@@ -63,20 +63,20 @@
 #   workloadGroups: #array
 #   - "{{workload_group}}":
 #       locationRefs:
-#       - ref: "{{workload_location_ref}}"
+#       - ref: "{{location_ref}}"
 #       uris:
 #       - "{{workload_uri}}":
-#           weight: 1
-#           maxConns: 0
-#           maxFails: 1
-#           failTimeout: 10s
-#           isBackup: false
-#           isDown: false
-#           resolve: DISABLED
-#           route: string
-#           service: string
-#           slowStart: 0
-#           isDrain: false
+#          - weight: 1
+#          - maxConns: 0
+#          - maxFails: 1
+#          - failTimeout: 10s
+#          - isBackup: false
+#          - isDown: false
+#          - resolve: DISABLED
+#          - route: string
+#          - service: string
+#          - slowStart: 0
+#          - isDrain: false
 #       loadBalancingMethod: #one of 
 #       - ROUND_ROBIN
 #       - IPHASH

@@ -155,31 +155,52 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
         "backend": {
             "workloadGroups": [
                 {
-                    "{{workload_group}}": 
+            {% for workloadGroup in backend.workloadGroups %}
+                    "{{workloadGroup}}": 
                         {
+                            {% if workloadGroup.locationRefs[0] is defined %}
                             "locationRefs": [
-                                { "ref": "{{workload_location_ref}}" }
+                                {% foreach locationRef in workloadGroup.locationRefs %}
+                                { "ref": "{locationRef}}" }{% if not loop.last %},{% endif %}
+                                {% endfor %}
                             ],
+                            {% endif %}
                             "uris": [
+                                {% for workloadUri in workloadGroup.uris %}
                                 {
-                                    "{{workload_uri}}": {
-                                    "weight": 0,
-                                    "maxConns": 0,
-                                    "maxFails": 0,
-                                    "failTimeout": "string",
-                                    "isBackup": "bool",
-                                    "isDown": "bool",
-                                    "resolve": ["ENABLED", "DISABLED"],
-                                    "route": "string",
-                                    "service": "string",
-                                    "slowStart": 0,
-                                    "isDrain": "bool"
+                                    "{{workloadUri}}": {
+                                    {% foreach option in workloadUri %}
+                                        {% if option.weight is defined %}"weight": "{{option.weight}}"
+                                        {% elif option.maxConns is defined %}"maxConns": "{{option.maxConns}}"
+                                        {% elif option.maxFails is defined %}"maxFails": "{{option.maxFails}}"
+                                        {% elif option.failTimeout is defined %}"failTimeout": "{{option.failTimeout}}"
+                                        {% elif option.isBackup is defined %}"isBackup": "{{option.isBackup}}"
+                                        {% elif option.isDown is defined %}"isDown": "{{option.isDown}}"
+                                        {% elif option.resolve is defined %}"resolve": "{{option.resolve}}"
+                                        {% elif option.route defined %}"route": "{{option.route}}"
+                                        {% elif option.service is defined %}"service": "{{option.service}}"
+                                        {% elif option.slowStart is defined %}"slowStart": "{{option.slowStart}}"
+                                        {% elif option.isDrain is defined %}"isDrain": "{{option.isDrain}}"
+                                        {% else %}
+                                        {% endif %}{% if not loop.last %},{% endif %}
+                                    {% endfor %}
                                     }
-                                }
-                            ],
-                            "loadBalancingMethod": [ "ROUND_ROBIN", "IPHASH", "LEAST_CONNECTIONS", {"HASH": { "type": null, "userKey": null, "consistentHash": ["ENABLED", "DISABLED"] }}, {"LEAST_TIME": ["HEADER", "LAST_BYTE", "LAST_BYTE_INFLIGHT"]} , {"RANDOM": ["LEAST_CONNECTIONS", "LEAST_TIME_HEADER", "LEAST_TIME_LAST_BYTE"]} ],
-                            "sessionPersistence": [ {"COOKIE": [{"srvID": "string"}, {"expireTime": "string"}, {"domain": "string"}, {"path": "string"}]}, {"ROUTE": ["COOKIE", "URI", "BOTH"]}, {"COOKIE_LEARN": [{"create": "string"}, {"lookup": "string"}]}  ],
-                            "serviceDiscovery":
+                                }{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                            ]
+                            {% if workloadGroup.loadBalancingMethod is defined %}
+                                {% if ("ROUND_ROBIN" or "IPHASH" or "LEAST_CONNECTIONS") in workloadGroup.loadBalancingMethod %},"loadBalancingMethod":  "{{workloadGroup.loadBalancingMethod}}"
+                                {% elif workloadGroup.loadBalancingMethod == "HASH" %},"loadBalancingMethod":  "{{workloadGroup.loadBalancingMethod}}": { "type": "{{workloadGroup.loadBalancingMethod.type}}" , "userKey": "{{workloadGroup.loadBalancingMethod.userKey}}", "consistentHash": "{{workloadGroup.loadBalancingMethod.consistentHash}}" } 
+                                {% elif workloadGroup.loadBalancingMethod == "LEAST_TIME" %},"loadBalancingMethod":  "{{workloadGroup.loadBalancingMethod}}": "{{workloadGroup.loadBalancingMethod.LEAST_TIME}}"
+                                {% elif workloadGroup.loadBalancingMethod == "RANDOM" %},"loadBalancingMethod":  "{{workloadGroup.loadBalancingMethod}}": "{{workloadGroup.loadBalancingMethod.RANDOM}}"
+                                {% else %}
+                                {% endif %}{% if not loop.last %},{% endif %}
+                            {% endif %}
+                            {% if workloadGroup.sessionPersistence is defined %}
+                            ,"sessionPersistence": [ {"COOKIE": [{"srvID": "string"}, {"expireTime": "string"}, {"domain": "string"}, {"path": "string"}]}, {"ROUTE": ["COOKIE", "URI", "BOTH"]}, {"COOKIE_LEARN": [{"create": "string"}, {"lookup": "string"}]}  ],
+                            {% endif %}
+                            {% if workloadGroup.serviceDiscovery is defined %}
+                            ,"serviceDiscovery":
                                 {
                                     "dnsResolver": {
                                         "uris": "string",
@@ -187,8 +208,10 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                                         "failTimeout": "string"
                                 }
                             }
+                            {% endif %}
                         }
                 }
+            {% endfor %}
             ],
             "monitoring": {
                 "defaultState": ["HEALTHY", "UNHEALTHY"],
