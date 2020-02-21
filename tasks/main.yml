@@ -11,7 +11,9 @@
     - controller_auth_token
 
 - name: Build JSON payload
-  template: src={{app_component}}.j2 dest={{app_component}}.json
+  template: 
+    src: app_component.j2
+    dest: app_component.json
 
 - name: form the component url
   set_fact:
@@ -19,16 +21,16 @@
 
 - name: upsert component (create if absent, change if present)
   uri:
-   url: "{{ component_url }}"
-   method: "PUT"
-   body: "{{(lookup('file','{{app_component}}.json'))}}"
-   body_format: json
-   status_code:
-   - 200
-   return_content: yes
-   validate_certs: no
-  headers:
-    Cookie: "{{controller_auth_token}}"
+    url: "{{ component_url }}"
+    method: "PUT"
+    body: "{{(lookup('file','app_component.json'))}}"
+    body_format: json
+    status_code:
+    - 200
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{controller_auth_token}}"
   register: component_status
 
 - name: show component status
@@ -42,15 +44,15 @@
 
 - name: Confirm component is provisioned and not errored
   uri:
-   url: "{{ component_url }}"
-   method: "GET"
-   body_format: json
-   status_code:
-   - 200
-   return_content: yes
-   validate_certs: no
-  headers:
-    Cookie: "{{ controller_auth_token }}"
+    url: "{{ component_url }}"
+    method: "GET"
+    body_format: json
+    status_code:
+    - 200
+    return_content: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{ controller_auth_token }}"
   register: application_component
   # error handling needs work
   until: (application_component is defined ) and

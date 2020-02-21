@@ -160,7 +160,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                         {
                             {% if workloadGroup.locationRefs[0] is defined %}
                             "locationRefs": [
-                                {% foreach locationRef in workloadGroup.locationRefs %}
+                                {% for locationRef in workloadGroup.locationRefs %}
                                 { "ref": "{locationRef}}" }{% if not loop.last %},{% endif %}
                                 {% endfor %}
                             ],
@@ -169,7 +169,7 @@ Name is not required in metadata as it is being passed in the URI of the PUT.
                                 {% for workloadUri in workloadGroup.uris %}
                                 {
                                     "{{workloadUri}}": {
-                                    {% foreach option in workloadUri %}
+                                    {% for option in workloadUri %}
                                         {% if option.weight is defined %}"weight": "{{option.weight}}"
                                         {% elif option.maxConns is defined %}"maxConns": "{{option.maxConns}}"
                                         {% elif option.maxFails is defined %}"maxFails": "{{option.maxFails}}"

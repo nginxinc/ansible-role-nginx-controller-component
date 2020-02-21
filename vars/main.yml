@@ -7,7 +7,6 @@
 # component_name:
 
 # structure for component details:
----
 # component:
 #   name: # name of the gateway REQUIRED
 #   displayName: # friendly display name
