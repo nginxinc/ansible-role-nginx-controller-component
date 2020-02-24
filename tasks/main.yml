@@ -1,5 +1,4 @@
 ---
-# tasks file for ansible-role-nginx-controller-component
 - name: Fail if required variables are not defined
   assert:
     that: ("{{ item }} is defined") and ("{{ item }} | length > 0")
@@ -10,34 +9,33 @@
     - appName
     - component.metadata.name
 
-- name: form the component url
+- name: Form the component url
   set_fact:
-    component_url: "https://{{controller_fqdn}}/{{api_version}}/services/environments/{{environmentName}}/apps/{{appName}}/components/{{component.metadata.name}}"
+    component_url: >-
+      "https://{{ controller_fqdn }}/{{ api_version }}/services/environments/{{ environmentName }}/apps/{{ appName }}/components/{{ component.metadata.name }}"
 
-- name: upsert component (create if absent, change if present)
+- name: Upsert component (create if absent, change if present)
   uri:
     url: "{{ component_url }}"
     method: "PUT"
-    # body: "{{(lookup('file','app_component.json'))}}"
     body: "{{ component }}"
     body_format: json
     status_code:
-    - 200
-    - 201
+      - 200
+      - 201
     return_content: yes
     validate_certs: no
     headers:
-      Cookie: "{{controller_auth_token}}"
+      Cookie: "{{ controller_auth_token }}"
   register: component_status
 
-- name: show component status
-  debug: 
+- name: Show component status
+  debug:
     msg: "{{ component_status }}"
 
-# pause to give the system a moment to initiate the change
-- name: pause
+- name: Pause while system initiates changes
   pause:
-   seconds: 2
+    seconds: 2
 
 - name: Confirm component is provisioned and not errored
   uri:
@@ -45,18 +43,18 @@
     method: "GET"
     body_format: json
     status_code:
-    - 200
+      - 200
     return_content: yes
     validate_certs: no
     headers:
       Cookie: "{{ controller_auth_token }}"
   register: component_current_status
   until: ( component_current_status is defined ) and
-         ( component_current_status.json.currentStatus.state.selfConfigState.isConfiguring != True )
+         ( not component_current_status.json.currentStatus.state.selfConfigState.isConfiguring )
   retries: 50
   delay: 2
-  failed_when: ( component_current_status.json.currentStatus.state.selfConfigState.isError == True )
+  failed_when: ( component_current_status.json.currentStatus.state.selfConfigState.isError )
 
-- name: show component details
-  debug: 
+- name: Show component details
+  debug:
     msg: "{{ component_current_status }}"

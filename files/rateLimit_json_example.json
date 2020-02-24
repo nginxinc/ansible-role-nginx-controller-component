@@ -6,34 +6,31 @@
     "desiredState": {
         "ingress": {
             "uris": {
-                "https://mortgage.acmefinancial.net/login": {
-                }                
+                "https://mortgage.acmefinancial.net/login": {}
             },
             "gatewayRefs": [
                     {
                         "ref": "/services/environments/lending-prod/gateways/lending"
-                    }                   
+                    }
                 ]
         },
         "backend": {
             "workloadGroups": {
                 "servers": {
                     "uris": {
-                        "https://10.1.10.11:4112": {
-                        },
-                        "https://10.1.10.12:4112": {
-                        }                        
+                        "https://10.1.10.11:4112": {},
+                        "https://10.1.10.12:4112": {}
                     }
                 }
             }
         },
-		"security":{
-			"rateLimit": {
-				"defaultLimit": {
-					"rate": 1,
-					"rateMeasure": "SECONDS"
-				}
-			}
-		}        
-    }    
+        "security":{
+            "rateLimit": {
+                "defaultLimit": {
+                    "rate": 1,
+                    "rateMeasure": "SECONDS"
+                }
+            }
+        }
+    }
 }
