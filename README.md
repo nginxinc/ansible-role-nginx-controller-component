@@ -14,9 +14,13 @@ Role Variables
 ### Required Variables
 
 `controller_fqdn` - FQDN of the NGINX Controller instance
+
 `controller_auth_token` - Authentication token for NGINX Controller
+
 `environmentName` - Environment the gateway is associated with
+
 `appName` - Name of the app
+
 `component.metadata.name` -  Name of the component
 
 ### Template Variables
@@ -38,7 +42,7 @@ To use this role you can create a playbook such as the following (let's name it 
   tasks:
     - name: Retrieve the NGINX Controller auth token
       include_role:
-        name: ansible-role-nginx-controller-generate-token
+        name: nginxinc.nginx-controller-generate-token
       vars:
         user_email: "user@example.com"
         user_password: "mySecurePassword"
@@ -46,7 +50,7 @@ To use this role you can create a playbook such as the following (let's name it 
 
   - name: Configure the component
     include_role:
-      name: ansible-role-nginx-controller-component
+      name: nginxinc.nginx-controller-component
     vars:
       # controller_auth_token: output by previous role in example
       appName: "testapp"
@@ -110,4 +114,8 @@ License
 Author Information
 ------------------
 
-brianehlert
+[Brian Ehlert](https://github.com/brianehlert)
+
+[Alessandro Fael Garcia](https://github.com/alessfg)
+
+&copy; [NGINX, Inc.](https://www.nginx.com/) 2020

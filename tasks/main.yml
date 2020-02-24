@@ -49,11 +49,11 @@
     headers:
       Cookie: "{{ controller_auth_token }}"
   register: component_current_status
-  until: ( component_current_status is defined ) and
-         ( not component_current_status.json.currentStatus.state.selfConfigState.isConfiguring )
+  until: (component_current_status is defined) and
+         (not component_current_status.json.currentStatus.state.selfConfigState.isConfiguring)
   retries: 50
   delay: 2
-  failed_when: ( component_current_status.json.currentStatus.state.selfConfigState.isError )
+  failed_when: component_current_status.json.currentStatus.state.selfConfigState.isError
 
 - name: Show component details
   debug:

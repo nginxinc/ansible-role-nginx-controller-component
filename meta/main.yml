@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-  role_name: nginx_controller_component
   author: Brian Ehlert
   description: A role to define application components with NGINX Controller.
   company: F5 Networks, Inc.

@@ -1,6 +1,7 @@
 ---
 ## All the below variables are REQUIRED
-# controller_fqdn:  # FQDN of the controller instance
+
+# controller_fqdn:  # FQDN of the NGINX Controller instance
 # controller_auth_token:  Authentication token for NGINX Controller
 # environmentName:  # Environment the gateway is associated with
 # appName:  # Name of the app
@@ -11,67 +12,67 @@
 
 # component:
 #   metadata:
-#     name:  # REQUIRED name of the gateway
-#     displayName:  # friendly display name
-#     description:  # complete sentence description
+#     name:  # REQUIRED: name of the gateway
+#     displayName:  # Friendly display name
+#     description:  # Complete sentence description
 #     tags:
 #       - tag1
 #       - tag2
 #   desiredState:
 #     ingress:
 #       uris:
-#         "/":  # one URI for the component of the service relative to the gateway (i.e. '/' or '/wiki')
-#           matchMethod: PREFIX  # optional: PREFIX | REGEX | REGEX_CASE_SENSITIVE | SUFFIX | EXACT
-#           tls:  # optional section: per-URI certificate if multiple URIs in the Component
+#         "/":  # One URI for the component of the service relative to the gateway (i.e. '/' or '/wiki')
+#           matchMethod: PREFIX  # OPTIONAL: PREFIX | REGEX | REGEX_CASE_SENSITIVE | SUFFIX | EXACT
+#           tls:  # OPTIONAL: per URI certificate if multiple URIs in the Component
 #             certRef:
 #               ref: ""
-#             protocols:  # applies to this URI array: TLSv1 | TLSv1.1 | TLSv1.2 | TLSv1.3 | SSLv2 | SSLv3
+#             protocols:  # Applies to this URI array: TLSv1 | TLSv1.1 | TLSv1.2 | TLSv1.3 | SSLv2 | SSLv3
 #             cipher: string
 #             preferServiceCipherServiceConfigState: # ENABLED | DISABLED
 #             sessionCache: # OFF | NONE | BUILTIN | SHARED
-#       methods:  # optional array: POST | GET | PUT | DELETE | PATCH | HEAD | TRACE | OPTIONS | CONNECT
+#       methods:  # OPTIONAL: POST | GET | PUT | DELETE | PATCH | HEAD | TRACE | OPTIONS | CONNECT
 #         - POST
 #         - GET
 #         - PUT
-#       headers:  # optional section applies to all URIs
+#       headers:  # OPTIONAL (Applies to all URIs)
 #         - name: string
 #           nameMatchMethod:  # PREFIX | REGEX | REGEX_CASE_SENSITIVE | SUFFIX | EXACT
 #         - value: string
 #           valueMatchMethod:  # PREFIX | REGEX  | REGEX_CASE_SENSITIVE | SUFFIX | EXACT
-#       http2:  # optional applies to all URIs: ENABLED | DISABLED
-#       spdy:  # optional applies to all URIs: ENABLED | DISABLED
-#       proxyProtocol:  # optional applies to all URIs: ENABLED | DISABLED
-#       setFib:  # optional applies to all URIs: int
-#       fastOpen:  # optional applies to all URIs: int
-#       backlog:  # optional applies to all URIs: int
-#       receiveBufferSize:  # optional applies to all URIs: string
-#       sendBufferSize:  # optional applies to all URIs: string
-#       acceptFilter:  # optional applies to all URIs: DATA_READY | HTTP_READY
-#       deferred:  # optional applies to all URIs: ENABLED | DISABLED
-#       isIpv6Only:  # optional applies to all URIs: bool
-#       reusePort:  # optional applies to all URIs: ENABLED | DISABLED
-#       tls:  # optional: applies to all URIs
+#       http2:  # OPTIONAL (Applies to all URIs): ENABLED | DISABLED
+#       spdy:  # OPTIONAL (Applies to all URIs): ENABLED | DISABLED
+#       proxyProtocol:  # OPTIONAL (Applies to all URIs): ENABLED | DISABLED
+#       setFib:  # OPTIONAL (Applies to all URIs): int
+#       fastOpen:  # OPTIONAL (Applies to all URIs): int
+#       backlog:  # OPTIONAL (Applies to all URIs): int
+#       receiveBufferSize:  # OPTIONAL (Applies to all URIs): string
+#       sendBufferSize:  # OPTIONAL (Applies to all URIs): string
+#       acceptFilter:  # OPTIONAL (Applies to all URIs): DATA_READY | HTTP_READY
+#       deferred:  # OPTIONAL (Applies to all URIs): ENABLED | DISABLED
+#       isIpv6Only:  # OPTIONAL (Applies to all URIs): bool
+#       reusePort:  # OPTIONAL (Applies to all URIs): ENABLED | DISABLED
+#       tls:  # OPTIONAL (Applies to all URIs)
 #         certRef:
 #           ref: ""
-#         protocols:  # array: TLSv1 | TLSv1.1 | TLSv1.2 | TLSv1.3 | SSLv2 | SSLv3
+#         protocols:  # Array: TLSv1 | TLSv1.1 | TLSv1.2 | TLSv1.3 | SSLv2 | SSLv3
 #           - TLSv1.3
 #         cipher: string
 #         preferServiceCipherServiceConfigState: # ENABLED | DISABLED
 #         sessionCache:  # OFF | NONE | BUILTIN | SHARED
-#       notFoundStatusCode:  # optional code to return when resource is not found: int (i.e. 404)
+#       notFoundStatusCode:  # OPTIONAL (Code to return when resource is not found): int (i.e. 404)
 #       gatewayRefs:  # REQUIRED
 #         - ref: ""
-#       tcpKeepAlive:  # optional section
+#       tcpKeepAlive:  # OPTIONAL
 #         idle: string
 #         interval: string
 #         count: 0
 #     backend:
-#       workloadGroups:  # array, one REQUIRED
+#       workloadGroups:  # Array, one REQUIRED
 #         "workload-group-1":
 #           locationRefs:
 #             - ref: ""
 #           uris:
-#             "http://10.0.0.1:6666":  # use {} if none of the below options are provided
+#             "http://10.0.0.1:6666":  # Use {} if none of the below options are provided
 #               weight: 1
 #               maxConns: 0
 #               maxFails: 1
@@ -85,9 +86,9 @@
 #               isDrain: false
 #           loadBalancingMethod:
 #             type:  # ROUND_ROBIN | IPHASH | LEAST_CONNECTIONS | HASH | LEAST_TIME | RANDOM
-#               userKey:  # if HASH
+#               userKey:  # If HASH
 #               consistentHash:  # ENABLED | DISABLED
-#           sessionPersistence:  # one of
+#           sessionPersistence:  # One of
 #             COOKIE:
 #               srvID: string
 #               expireTime: string
@@ -99,7 +100,7 @@
 #               lookup: string
 #           serviceDiscovery:
 #             dnsResolver:
-#               uris: string  # array
+#               uris: string  # Array
 #               ttl: string
 #               failTimeout: string
 #       monitoring:
@@ -115,7 +116,7 @@
 #             range:
 #               startCode: 100
 #               endCode: 599
-#             codes:  # array of individual codes from 100 to 599
+#             codes:  # Array of individual codes from 100 to 599
 #             match: true
 #           headers:
 #             content: string
@@ -135,19 +136,19 @@
 #       ntlmAuthentication: DISABLED
 #       persistentState: string
 #     programmability:
-#       uriRewrites:  # array
+#       uriRewrites:  # Array
 #         - incomingPattern: string
 #           rewritePattern: string
 #       httpHttpsRedirect: DISABLED
-#       uriRedirects:  # array
+#       uriRedirects:  # Array
 #         - incomingPattern: string
 #           rewritePattern: string
 #           responseCode: 0
-#       cookieModifications:  # array
+#       cookieModifications:  # Array
 #         - action:  # ADD | MODIFY | DELETE
 #           cookieName: string
 #           cookieValue: string
-#       requestHeaderModifications:  # array
+#       requestHeaderModifications:  # Array
 #         - action: ADD
 #           headerName: string
 #           headerValue: string
@@ -158,7 +159,7 @@
 #         - action: DELETE
 #           headerName: string
 #           incomingValuePattern: regex
-#       responseHeaderModifications:  # array
+#       responseHeaderModifications:  # Array
 #         - action: ADD
 #           headerName: string
 #           headerValue: string
@@ -182,7 +183,7 @@
 #         isMonitorOnly: true
 #         signatureOverrides:
 #           action: IGNORE
-#         technologyStack:  # array of known stacks i.e.: [ ANGULAR_JS", "JAVASCRIPT", "LINUX", "MYSQL", "PYTHON" ]
+#         technologyStack:  # Array of known stacks i.e.: [ ANGULAR_JS", "JAVASCRIPT", "LINUX", "MYSQL", "PYTHON" ]
 #       identityProviderRefs:
 #         - ref: ""
 #       apiKeyClientAuth:
