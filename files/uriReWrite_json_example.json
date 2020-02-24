@@ -5,40 +5,36 @@
     "desiredState": {
         "ingress": {
             "uris": {
-                "/blog/": {
-                }                
+                "/blog/": {}
             },
             "gatewayRefs": [
-                    {
-                        "ref": "/services/environments/retail-dev/gateways/www.acmefinancial.net"
-                    }                   
-                ]
+                {
+                    "ref": "/services/environments/retail-dev/gateways/www.acmefinancial.net"
+                }
+            ]
         },
         "backend": {
             "workloadGroups": {
                 "servers": {
                     "uris": {
-                        "http://10.1.20.21:8003": {
-                        },
-                        "http://10.1.20.22:8003": {
-                        }                        
+                        "http://10.1.20.21:8003": {},
+                        "http://10.1.20.22:8003": {}
                     }
                 }
             },
-		    "keepAlive": {
-		    	"connections": 666,
-		        "requestsPerConn": 999,
-		        "idleTimeout": "5h"
-		    }
+            "keepAlive": {
+                "connections": 666,
+                "requestsPerConn": 999,
+                "idleTimeout": "5h"
+            }
         },
-		"programmability": {
-			"uriRewrites": [
-				{
-					"incomingPattern": "^/blog/(.*)$",
-					"rewritePattern": "/blog/wordpress/wwwsite/$1?"
-				}
-			]
-		}
-		
-    }    
+        "programmability": {
+            "uriRewrites": [
+                {
+                    "incomingPattern": "^/blog/(.*)$",
+                    "rewritePattern": "/blog/wordpress/wwwsite/$1?"
+                }
+            ]
+        }
+    }
 }

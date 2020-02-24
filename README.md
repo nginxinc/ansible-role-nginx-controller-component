@@ -1,43 +1,62 @@
 NGINX Controller Component
-=========
+==========================
 
-A Role to define application components with NGINX Controller.
-An Application Component is the path between the Gateway ingress and the upstream workload group(s)
+Define application components with NGINX Controller to create paths between the Gateway ingress and the upstream workload group(s).
 
 Requirements
 ------------
 
+[NGINX Controller](https://www.nginx.com/products/nginx-controller/)
+
 Role Variables
 --------------
+
+### Required Variables
+
+`controller_fqdn` - FQDN of the NGINX Controller instance
+`controller_auth_token` - Authentication token for NGINX Controller
+`environmentName` - Environment the gateway is associated with
+`appName` - Name of the app
+`component.metadata.name` -  Name of the component
+
+### Template Variables
+
+This role has multiple template related variables. The descriptions and defaults for all these variables can be found in **[vars/main.yml](./vars/main.yml)**
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
 Example Playbook
 ----------------
+
+To use this role you can create a playbook such as the following (let's name it `nginx_controller_component.yaml` for the purposes of this example).
 
 ```yaml
 - hosts: localhost
   gather_facts: no
 
   tasks:
-  - include_role:
-      name: ansible-role-nginx-controller-generate-token
+    - name: Retrieve the NGINX Controller auth token
+      include_role:
+        name: ansible-role-nginx-controller-generate-token
+      vars:
+        user_email: "user@example.com"
+        user_password: "mySecurePassword"
+        controller_fqdn: "controller.mydomain.com"
 
-  - name: configure the component
+  - name: Configure the component
     include_role:
       name: ansible-role-nginx-controller-component
     vars:
+      # controller_auth_token: output by previous role in example
       appName: "testapp"
       environmentName: "production-us-west"
       component:
-        metadata: 
+        metadata:
           name: lending
           displayName: "Shared Public Lending BU Gateway"
           description: "Routes all non special Lending applications"
-        desiredState:  
+        desiredState:
           ingress:
             uris:
               "/":
@@ -58,7 +77,7 @@ Example Playbook
                     {} # use defaults
                   "http://10.1.10.12:5821":
                     failTimeout: 10s
-                loadBalancingMethod: 
+                loadBalancingMethod:
                   type: ROUND_ROBIN
               group2:
                 uris:
@@ -77,15 +96,18 @@ Example Playbook
                   match: true
 ```
 
-ansible-playbook nginx_controller_component.yaml -e "user_email=brian@example.com user_password=notsecure controller_fqdn=controller.example.local"
-ansible-playbook nginx_controller_component.yaml -e "@nginx_controller_component_vars.yaml"
+You can then run `ansible-playbook nginx_controller_component.yaml` to execute the playbook.
+
+Alternatively, you can also pass/override any variables at run time using the `--extra-vars` or `-e` flag like so `ansible-playbook nginx_controller_component.yaml -e "user_email=brian@example.com user_password=notsecure controller_fqdn=controller.example.local"`
+
+You can also pass/override any variables by passing a `yaml` file containing any number of variables like so `ansible-playbook nginx_controller_component.yaml -e "@nginx_controller_component_vars.yaml"`
 
 License
 -------
 
-Apache
+[Apache License, Version 2.0](./LICENSE)
 
 Author Information
 ------------------
 
-BrianEhlert
+brianehlert
