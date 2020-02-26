@@ -2,7 +2,7 @@
 - name: Fail if required variables are not defined
   assert:
     that: ("{{ item }} is defined") and ("{{ item }} | length > 0")
-  with_items:
+  loop:
     - controller_fqdn
     - controller_auth_token
     - environmentName
@@ -50,10 +50,10 @@
       Cookie: "{{ controller_auth_token }}"
   register: component_current_status
   until: (component_current_status is defined) and
-         (not component_current_status.json.currentStatus.state.selfConfigState.isConfiguring)
+         (not component_current_status.json.currentStatus.state.selfConfigState.isConfiguring | bool)
   retries: 50
   delay: 2
-  failed_when: component_current_status.json.currentStatus.state.selfConfigState.isError
+  failed_when: component_current_status.json.currentStatus.state.selfConfigState.isError | bool
 
 - name: Show component details
   debug:

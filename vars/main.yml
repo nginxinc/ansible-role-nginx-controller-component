@@ -3,7 +3,7 @@
 
 # controller_fqdn:  # FQDN of the NGINX Controller instance
 # controller_auth_token:  Authentication token for NGINX Controller
-# environmentName:  # Environment the gateway is associated with
+# environmentName:  # Environment the component is associated with
 # appName:  # Name of the app
 
 ## Structure for component details:
@@ -12,7 +12,7 @@
 
 # component:
 #   metadata:
-#     name:  # REQUIRED: name of the gateway
+#     name:  # REQUIRED: name of the component
 #     displayName:  # Friendly display name
 #     description:  # Complete sentence description
 #     tags:

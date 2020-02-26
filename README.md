@@ -17,7 +17,7 @@ Role Variables
 
 `controller_auth_token` - Authentication token for NGINX Controller
 
-`environmentName` - Environment the gateway is associated with
+`environmentName` - Environment the component is associated with
 
 `appName` - Name of the app
 
@@ -53,8 +53,9 @@ To use this role you can create a playbook such as the following (let's name it 
       name: nginxinc.nginx-controller-component
     vars:
       # controller_auth_token: output by previous role in example
-      appName: "testapp"
+      controller_fqdn: "controller.mydomain.com"
       environmentName: "production-us-west"
+      appName: "testapp"
       component:
         metadata:
           name: lending

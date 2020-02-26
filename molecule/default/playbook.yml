@@ -8,8 +8,8 @@
     # user_email: ""
     # user_password: ""
     #
-    # appName: "testapp"
     # environmentName: ""
+    # appName: "testapp"
     # component:
     #   metadata:
     #     name: lending
