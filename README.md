@@ -84,14 +84,6 @@ To use this role you can create a playbook such as the following (let's name it 
                     failTimeout: 10s
                 loadBalancingMethod:
                   type: ROUND_ROBIN
-              group2:
-                uris:
-                  "http://10.1.10.12:8121":
-                    {} # use defaults
-                  "http://10.1.10.11:5821":
-                    {} # use defaults
-                  "http://10.1.10.12:5821":
-                    {} # use defaults
             monitoring:
               response:
                 status:
