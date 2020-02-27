@@ -11,7 +11,8 @@
 
 - name: Form the component url
   set_fact:
-    component_url: "https://{{ controller_fqdn }}/{{ api_version }}/services/environments/{{ environmentName }}/apps/{{ appName }}/components/{{ component.metadata.name }}"
+    component_url: >-
+      https://{{ controller_fqdn }}/{{ api_version }}/services/environments/{{ environmentName }}/apps/{{ appName }}/components/{{ component.metadata.name }}
 
 - name: Upsert component (create if absent, change if present)
   uri:
