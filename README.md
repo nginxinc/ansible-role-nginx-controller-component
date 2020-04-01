@@ -13,9 +13,9 @@ Role Variables
 
 ### Required Variables
 
-`controller_fqdn` - FQDN of the NGINX Controller instance
+`controller.fqdn` - FQDN of the NGINX Controller instance
 
-`controller_auth_token` - Authentication token for NGINX Controller
+`controller.auth_token` - Authentication token for NGINX Controller
 
 `environmentName` - Environment the component is associated with
 
@@ -39,63 +39,64 @@ To use this role you can create a playbook such as the following (let's name it 
 - hosts: localhost
   gather_facts: no
 
+  vars:
+    controller:
+      user_email: "user@example.com"
+      user_password: "mySecurePassword"
+      fqdn: "controller.mydomain.com"
+      validate_certs: false
+
   tasks:
     - name: Retrieve the NGINX Controller auth token
       include_role:
         name: nginxinc.nginx-controller-generate-token
-      vars:
-        user_email: "user@example.com"
-        user_password: "mySecurePassword"
-        controller_fqdn: "controller.mydomain.com"
 
-  - name: Configure the component
-    include_role:
-      name: nginxinc.nginx-controller-component
-    vars:
-      # controller_auth_token: output by previous role in example
-      controller_fqdn: "controller.mydomain.com"
-      environmentName: "production-us-west"
-      appName: "testapp"
-      component:
-        metadata:
-          name: lending
-          displayName: "Shared Public Lending BU Gateway"
-          description: "Routes all non special Lending applications"
-        desiredState:
-          ingress:
-            uris:
-              "/":
-                {} # use defaults
-              "/jokes/random":
-                matchMethod: PREFIX
-            gatewayRefs:
-              - ref: "/services/environments/production-us-west/gateways/lending"
-          backend:
-            workloadGroups:
-              group1:
-                uris:
-                  "http://10.1.10.11:8121":
-                    isDown: true
-                  "http://10.1.10.12:8121":
-                    {} # use defaults
-                  "http://10.1.10.11:5821":
-                    {} # use defaults
-                  "http://10.1.10.12:5821":
-                    failTimeout: 10s
-                loadBalancingMethod:
-                  type: ROUND_ROBIN
-            monitoring:
-              response:
-                status:
-                  range:
-                    startCode: 200
-                    endCode: 201
-                  match: true
+    - name: Configure the component
+      include_role:
+        name: nginxinc.nginx-controller-component
+      vars:
+        environmentName: "production-us-west"
+        appName: "testapp"
+        component:
+          metadata:
+            name: lending
+            displayName: "Shared Public Lending BU Gateway"
+            description: "Routes all non special Lending applications"
+          desiredState:
+            ingress:
+              uris:
+                "/":
+                  {} # use defaults
+                "/jokes/random":
+                  matchMethod: PREFIX
+              gatewayRefs:
+                - ref: "/services/environments/production-us-west/gateways/lending"
+            backend:
+              workloadGroups:
+                group1:
+                  uris:
+                    "http://10.1.10.11:8121":
+                      isDown: true
+                    "http://10.1.10.12:8121":
+                      {} # use defaults
+                    "http://10.1.10.11:5821":
+                      {} # use defaults
+                    "http://10.1.10.12:5821":
+                      failTimeout: 10s
+                  loadBalancingMethod:
+                    type: ROUND_ROBIN
+              monitoring:
+                response:
+                  status:
+                    range:
+                      startCode: 200
+                      endCode: 201
+                    match: true
 ```
 
 You can then run `ansible-playbook nginx_controller_component.yaml` to execute the playbook.
 
-Alternatively, you can also pass/override any variables at run time using the `--extra-vars` or `-e` flag like so `ansible-playbook nginx_controller_component.yaml -e "user_email=brian@example.com user_password=notsecure controller_fqdn=controller.example.local"`
+Alternatively, you can also pass/override any variables at run time using the `--extra-vars` or `-e` flag like so `ansible-playbook nginx_controller_component.yaml -e '{"controller":{ "user_email":"user@company.com","user_password":"notsecure", "fqdn": "controller.example.local", "validate_certs":false }}'`
 
 You can also pass/override any variables by passing a `yaml` file containing any number of variables like so `ansible-playbook nginx_controller_component.yaml -e "@nginx_controller_component_vars.yaml"`
 
@@ -110,5 +111,7 @@ Author Information
 [Brian Ehlert](https://github.com/brianehlert)
 
 [Alessandro Fael Garcia](https://github.com/alessfg)
+
+[Daniel Edgar](https://github.com/aknot242)
 
 &copy; [NGINX, Inc.](https://www.nginx.com/) 2020
