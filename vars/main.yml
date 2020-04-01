@@ -1,8 +1,9 @@
 ---
 ## All the below variables are REQUIRED
 
-# controller_fqdn:  # FQDN of the NGINX Controller instance
-# controller_auth_token:  Authentication token for NGINX Controller
+# controller:
+#   fqdn:  # FQDN of the NGINX Controller instance
+#   auth_token:  Authentication token for NGINX Controller
 # environmentName:  # Environment the component is associated with
 # appName:  # Name of the app
 
