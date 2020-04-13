@@ -49,11 +49,11 @@ To use this role you can create a playbook such as the following (let's name it 
   tasks:
     - name: Retrieve the NGINX Controller auth token
       include_role:
-        name: nginxinc.nginx-controller-generate-token
+        name: nginxinc.nginx_controller_generate_token
 
     - name: Configure the component
       include_role:
-        name: nginxinc.nginx-controller-component
+        name: nginxinc.nginx_controller_component
       vars:
         environmentName: "production-us-west"
         appName: "testapp"
