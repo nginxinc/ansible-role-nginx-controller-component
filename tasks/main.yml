@@ -3,37 +3,37 @@
   assert:
     that: ("{{ item }} is defined") and ("{{ item }} | length > 0")
   loop:
-    - api_version
-    - controller.fqdn
-    - controller.auth_token
-    - environmentName
-    - appName
-    - component.metadata.name
+    - nginx_controller_api_version
+    - nginx_controller_fqdn
+    - nginx_controller_auth_token
+    - nginx_controller_environmentName
+    - nginx_controller_appName
+    - nginx_controller_component.metadata.name
 
 - name: Form the component url
   set_fact:
-    component_url: >-
-      https://{{ controller.fqdn }}/{{ api_version }}/services/environments/{{ environmentName }}/apps/{{ appName }}/components/{{ component.metadata.name }}
+    nginx_controller_component_url: >-
+      https://{{ nginx_controller_fqdn }}/{{ nginx_controller_api_version }}/services/environments/{{ nginx_controller_environmentName }}/apps/{{ nginx_controller_appName }}/components/{{ nginx_controller_component.metadata.name }}
 
 - name: Upsert component (create if absent, change if present)
   uri:
-    url: "{{ component_url }}"
+    url: "{{ nginx_controller_component_url }}"
     method: "PUT"
-    body: "{{ component }}"
+    body: "{{ nginx_controller_component }}"
     body_format: json
     status_code:
       - 200
       - 201
       - 202
     return_content: yes
-    validate_certs: "{{ controller.validate_certs | default(false) }}"
+    validate_certs: "{{ nginx_controller_validate_certs | default(false) }}"
     headers:
-      Cookie: "{{ controller.auth_token }}"
-  register: component_status
+      Cookie: "{{ nginx_controller_auth_token }}"
+  register: nginx_controller_component_status
 
 - name: Show component status
   debug:
-    msg: "{{ component_status }}"
+    msg: "{{ nginx_controller_component_status }}"
 
 - name: Pause while system initiates changes
   pause:
@@ -41,22 +41,22 @@
 
 - name: Confirm component is provisioned and not errored
   uri:
-    url: "{{ component_url }}"
+    url: "{{ nginx_controller_component_url }}"
     method: "GET"
     body_format: json
     status_code:
       - 200
     return_content: yes
-    validate_certs: "{{ controller.validate_certs | default(false) }}"
+    validate_certs: "{{ nginx_controller_validate_certs | default(false) }}"
     headers:
-      Cookie: "{{ controller.auth_token }}"
-  register: component_current_status
-  until: (component_current_status is defined) and
-         (not component_current_status.json.currentStatus.state.selfConfigState.isConfiguring | bool)
+      Cookie: "{{ nginx_controller_auth_token }}"
+  register: nginx_controller_component_current_status
+  until: (nginx_controller_component_current_status is defined) and
+         (not nginx_controller_component_current_status.json.currentStatus.state.selfConfigState.isConfiguring | bool)
   retries: 50
   delay: 2
-  failed_when: component_current_status.json.currentStatus.state.selfConfigState.isError | bool
+  failed_when: nginx_controller_component_current_status.json.currentStatus.state.selfConfigState.isError | bool
 
 - name: Show component details
   debug:
-    msg: "{{ component_current_status }}"
+    msg: "{{ nginx_controller_component_current_status }}"

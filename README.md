@@ -13,15 +13,15 @@ Role Variables
 
 ### Required Variables
 
-`controller.fqdn` - FQDN of the NGINX Controller instance
+`nginx_controller_fqdn` - FQDN of the NGINX Controller instance
 
-`controller.auth_token` - Authentication token for NGINX Controller
+`nginx_controller_auth_token` - Authentication token for NGINX Controller
 
-`environmentName` - Environment the component is associated with
+`nginx_controller_environmentName` - Environment the component is associated with
 
-`appName` - Name of the app
+`nginx_controller_appName` - Name of the app
 
-`component.metadata.name` -  Name of the component
+`nginx_controller_component.metadata.name` -  Name of the component
 
 ### Template Variables
 
@@ -40,11 +40,10 @@ To use this role you can create a playbook such as the following (let's name it 
   gather_facts: no
 
   vars:
-    controller:
-      user_email: "user@example.com"
-      user_password: "mySecurePassword"
-      fqdn: "controller.mydomain.com"
-      validate_certs: false
+    nginx_controller_user_email: "user@example.com"
+    nginx_controller_user_password: "mySecurePassword"
+    nginx_controller_fqdn: "controller.mydomain.com"
+    nginx_controller_validate_certs: false
 
   tasks:
     - name: Retrieve the NGINX Controller auth token
@@ -55,9 +54,9 @@ To use this role you can create a playbook such as the following (let's name it 
       include_role:
         name: nginxinc.nginx_controller_component
       vars:
-        environmentName: "production-us-west"
-        appName: "testapp"
-        component:
+        nginx_controller_environmentName: "production-us-west"
+        nginx_controller_appName: "testapp"
+        nginx_controller_component:
           metadata:
             name: lending
             displayName: "Shared Public Lending BU Gateway"

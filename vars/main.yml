@@ -1,17 +1,16 @@
 ---
 ## All the below variables are REQUIRED
 
-# controller:
-#   fqdn:  # FQDN of the NGINX Controller instance
-#   auth_token:  Authentication token for NGINX Controller
-# environmentName:  # Environment the component is associated with
-# appName:  # Name of the app
+# nginx_controller_fqdn:  # FQDN of the NGINX Controller instance
+# nginx_controller_auth_token:  Authentication token for NGINX Controller
+# nginx_controller_environmentName:  # Environment the component is associated with
+# nginx_controller_appName:  # Name of the app
 
 ## Structure for component details:
 ## * Omit settings that are empty / not used.
 ## * Use {} for URIS if not providing optional behavior settings. i.e. "http://example.com": {}
 
-# component:
+# nginx_controller_component:
 #   metadata:
 #     name:  # REQUIRED: name of the component
 #     displayName:  # Friendly display name
