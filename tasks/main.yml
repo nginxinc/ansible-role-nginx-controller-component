@@ -3,6 +3,7 @@
   assert:
     that: ("{{ item }} is defined") and ("{{ item }} | length > 0")
   loop:
+    - api_version
     - controller.fqdn
     - controller.auth_token
     - environmentName

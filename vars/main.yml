@@ -131,7 +131,7 @@
 #         requestsPerConn: 0
 #         idleTimeout: 1h
 #       queue:
-#         lenght: 0
+#         length: 0
 #         timeOut: 1h
 #       httpVersion: string
 #       ntlmAuthentication: DISABLED
