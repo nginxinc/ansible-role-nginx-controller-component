@@ -46,6 +46,8 @@
     body_format: json
     status_code:
       - 200
+      - 201
+      - 202
     return_content: yes
     validate_certs: "{{ nginx_controller_validate_certs | default(false) }}"
     headers:
@@ -63,7 +65,3 @@
   fail:
     msg: "{{ nginx_controller_component_current_status.json.currentStatus.state.conditions }}"
   when: nginx_controller_component_current_status.json.currentStatus.state.selfConfigState.isError | bool
-
-- name: Show component details
-  debug:
-    msg: "{{ nginx_controller_component_current_status }}"
