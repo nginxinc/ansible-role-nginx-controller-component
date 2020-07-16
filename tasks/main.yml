@@ -31,9 +31,9 @@
       Cookie: "{{ nginx_controller_auth_token }}"
   register: nginx_controller_component_status
 
-- name: Show component status
-  debug:
-    msg: "{{ nginx_controller_component_status }}"
+# - name: Show component status
+#   debug:
+#     msg: "{{ nginx_controller_component_status }}"
 
 - name: Pause while system initiates changes
   pause:
@@ -43,7 +43,6 @@
   uri:
     url: "{{ nginx_controller_component_url }}"
     method: "GET"
-    body_format: json
     status_code:
       - 200
       - 201
