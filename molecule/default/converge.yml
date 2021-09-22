@@ -1,0 +1,49 @@
+---
+- name: Converge
+  hosts: controllers
+
+  vars:
+    nginx_controller_validate_certs: false
+    nginx_controller_fqdn: mock-server.molecule-test:1080
+    nginx_controller_auth_token: "ABC123"
+    nginx_controller_environmentName: "production"
+    nginx_controller_appName: "www.example.com"
+    nginx_controller_component:
+      metadata:
+        name: root
+        displayName: "Example Root Component"
+        description: "Example Root Component"
+      desiredState:
+        ingress:
+          uris:
+            "/":
+              {}  # use defaults
+            "/jokes/random":
+              matchMethod: PREFIX
+          gatewayRefs:
+            - ref: "/services/environments/production/gateways/www.example.com"
+        backend:
+          workloadGroups:
+            group1:
+              uris:
+                "http://10.1.10.11:8121":
+                  isDown: true
+                "http://10.1.10.12:8121":
+                  {}  # use defaults
+              loadBalancingMethod:
+                type: ROUND_ROBIN
+            group2:
+              uris:
+                "http://10.1.10.12:8121":
+                  {}  # use defaults
+          monitoring:
+            response:
+              status:
+                range:
+                  startCode: 200
+                  endCode: 201
+                match: true
+  tasks:
+    - name: Call Component Role
+      include_role:
+        name: ansible-role-nginx-controller-component
