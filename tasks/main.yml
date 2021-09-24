@@ -25,15 +25,11 @@
       - 200
       - 201
       - 202
-    return_content: yes
+    return_content: true
     validate_certs: "{{ nginx_controller_validate_certs | default(false) }}"
     headers:
       Cookie: "{{ nginx_controller_auth_token }}"
   register: nginx_controller_component_status
-
-# - name: Show component status
-#   debug:
-#     msg: "{{ nginx_controller_component_status }}"
 
 - name: Pause while system initiates changes
   pause:
@@ -47,7 +43,7 @@
       - 200
       - 201
       - 202
-    return_content: yes
+    return_content: true
     validate_certs: "{{ nginx_controller_validate_certs | default(false) }}"
     headers:
       Cookie: "{{ nginx_controller_auth_token }}"
@@ -59,8 +55,8 @@
   failed_when: nginx_controller_component_current_status.json.currentStatus.state.selfConfigState.isError | bool
   ignore_errors: true
 
- # above simply errors but does not include the informative failure messages from Controller 
-- name: report failure details from Controller
+ # above simply errors but does not include the informative failure messages from Controller
+- name: Report failure details from Controller
   fail:
     msg: "{{ nginx_controller_component_current_status.json.currentStatus.state.conditions }}"
   when: nginx_controller_component_current_status.json.currentStatus.state.selfConfigState.isError | bool
