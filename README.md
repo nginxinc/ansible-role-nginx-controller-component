@@ -1,6 +1,8 @@
 NGINX Controller Component
 ==========================
 
+# This repository has been archived. There will likely be no further development on the project and security vulnerabilities may be unaddressed.
+
 Define application components with NGINX Controller to create paths between the Gateway ingress and the upstream workload group(s).
 
 Requirements
